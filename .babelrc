@@ -4,9 +4,10 @@
     ["@babel/transform-runtime"],
     ["module-resolver", {
        "alias": { 
-        "src": "./src",
+        "@": "./src",
         "config": "./src/config",
         "controllers": "./src/controllers",
+        "middlewares": "./src/middlewares",
         "models": "./src/models",
         "providers": "./src/providers",
         "routes": "./src/routes",

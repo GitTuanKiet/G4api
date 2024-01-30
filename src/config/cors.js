@@ -1,7 +1,7 @@
-import { DOMAINS } from '~/utils/constants'
+import { DOMAINS } from 'utils/constants'
 import { ENV } from './environment'
 import { StatusCodes } from 'http-status-codes'
-import ApiError from '~/utils/ApiError'
+import ApiError from 'utils/ApiError'
 import cor from 'cors'
 
 const isProduction = ENV.NODE_ENV === 'production'

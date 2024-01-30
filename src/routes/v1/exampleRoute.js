@@ -1,24 +1,16 @@
-import e from 'express'
 import express from 'express'
-import multer from 'multer'
 
-// import { exampleController } from '~/controllers/exampleController'
-// import { exampleValidation } from '~/validators/exampleValidation'
-
-// multer để upload file
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
+import { Controllers } from 'controllers/exampleController'
+import { Validations } from 'validations/exampleValidation'
 
 const router = express.Router()
 
 // truyền qua validator trước khi vào controller
 router.route('/create')
-  .post(upload.single('cover'),
-    exampleValidation.createExampleValidation,
-    exampleController.createExampleController)
+  .post(Validations.createExampleValidation, Controllers.exampleCreateController)
 
 router.route('/:id')
-  .put(exampleValidation.updateExampleValidation, exampleController.updateExampleController)
-  .delete(exampleController.destroyExampleController)
+  .put(Validations.updateExampleValidation, Controllers.exampleUpdateController)
+  .delete(Controllers.exampleDestroyController)
 
 module.exports = router
