@@ -6,15 +6,15 @@ import Joi from 'joi'
 // gọi hàm getMongo để lấy dbInstance 
 import { getMongo } from 'config/mongodb'
 
-// ví dụ hàm fixObjectId
+//hàm fixObjectId
 import { fixObjectId } from 'utils/formatters'
 
 const NameExampleCollection = 'example'
 
 // định nghĩa schema cho collection example
 const schemaCreateExample = Joi.object({
-  name: Joi.string().required(),
-  description: Joi.string().required()
+  // name: Joi.string().required(),
+  // description: Joi.string().required()
 })
 
 // validate data với schemaCreateExample
@@ -46,7 +46,7 @@ const createExample = async (data) => {
 }
 
 // ví dụ hàm cập nhật theo id
-const updateCard = async (id, data) => {
+const updateExample = async (id, data) => {
   try {
     const value = await validateExample(data)
     return await getMongo().collection(NameExampleCollection).findOneAndUpdate(
@@ -69,6 +69,6 @@ const destroyExample = async (id) => {
 export const exampleModel = {
   findOneById,
   createExample,
-  updateCard,
+  updateExample,
   destroyExample
 }

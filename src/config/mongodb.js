@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { MongoClient, ServerApiVersion } from 'mongodb'
-import { ENV } from '~/config/environment'
+import { ENV } from 'config/environment'
 
 const { MONGO_URL, MONGO_DB } = ENV
 
