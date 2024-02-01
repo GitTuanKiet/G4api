@@ -3,7 +3,7 @@
 // Joi là một thư viện validate dữ liệu giống như Yup
 import Joi from 'joi'
 
-// gọi hàm getMongo để lấy dbInstance 
+// gọi hàm getMongo để lấy dbInstance
 import { getMongo } from 'config/mongodb'
 
 //hàm fixObjectId
@@ -22,7 +22,7 @@ const validateExample = async (data) => {
   try {
     return await schemaCreateExample.validateAsync(data, { abortEarly: false })
   } catch (error) {
-    next(error)
+    throw error
   }
 }
 
@@ -31,7 +31,7 @@ const findOneById = async (id) => {
   try {
     return await getMongo().collection(NameExampleCollection).findOne({ _id: fixObjectId(id) })
   } catch (error) {
-    next(error)
+    throw error
   }
 }
 

@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import express from 'express'
-import { connectMongo, disconnectMongo } from 'config/mongodb'
 import exitHook from 'async-exit-hook'
+import compression from 'compression'
+import { connectMongo, disconnectMongo } from 'config/mongodb'
 import { ENV } from 'config/environment'
 
 const { PORT, HOST, AUTHOR, NODE_ENV } = ENV
@@ -10,8 +11,11 @@ const START_SERVER = () => {
   const app = express()
 
   app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
 
+  app.use(require('config/helmet'))
   app.use(require('config/cors'))
+  app.use(compression())
 
   app.use('/v1', require('routes/v1'))
 

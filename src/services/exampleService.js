@@ -27,7 +27,7 @@ const updateExample = async (id, data) => {
 
     return await exampleModel.updateExample(id, updateData)
   } catch (error) {
-    next(error)
+    throw error
   }
 }
 
