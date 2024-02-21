@@ -13,7 +13,13 @@ const updateProfile = async (req, res, next) => {
       birthday: Joi.date(),
       gender: Joi.string().valid('male', 'female', 'none'),
       avatar: Joi.string(),
-      PIN: Joi.number()
+      PIN: Joi.number(),
+
+      // _id của các collection khác
+      memberCardId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE),
+      voucherIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)),
+      giftIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)),
+      couponIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE))
     })
     await schemaUpdateProfile.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
     next()

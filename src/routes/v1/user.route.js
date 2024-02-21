@@ -5,9 +5,6 @@ import { UserValidations } from 'validations/user.validation'
 
 const router = express.Router()
 
-// verify token middleware
-router.use(require('middlewares/verifyJWT'))
-
 router.route('/update-profile')
   .put(UserValidations.updateProfile, UserControllers.updateProfile)
 

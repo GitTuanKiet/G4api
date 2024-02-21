@@ -11,6 +11,11 @@ router.get('/status', (req, res) => {
 
 router.use('/example', require('./exampleRoute'))
 router.use('/auth', require('./auth.route'))
+
+// verify token middleware
+router.use(require('middlewares/verifyJWT'))
+
 router.use('/user', require('./user.route'))
+router.use('/card', require('./cards/card.route'))
 
 module.exports = router
