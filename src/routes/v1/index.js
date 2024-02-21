@@ -10,5 +10,6 @@ router.get('/status', (req, res) => {
 })
 
 router.use('/example', require('./exampleRoute'))
+router.use('/auth', require('./auth.route'))
 
 module.exports = router

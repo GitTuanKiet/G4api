@@ -9,6 +9,9 @@ export const ENV = {
 
   NODE_ENV: process.env.NODE_ENV,
 
+  JWT_SECRET: process.env.JWT_SECRET,
+  EXPIRES_IN: process.env.EXPIRES_IN,
+
   AUTHOR: process.env.AUTHOR
 }
 
