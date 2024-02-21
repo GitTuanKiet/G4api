@@ -45,7 +45,26 @@ const registerService = async (data) => {
   }
 }
 
+const forgotPasswordService = async (data) => {
+  try {
+    // tìm user theo email
+    const user = await UserModels.findOneByEmail(data.email)
+    if (!user) throw new Error('Email not found')
+
+    // tạo token và gửi email
+    const token = Jwt.sign({ id: user._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+
+    // gửi email
+    // ...
+
+    return { token }
+  } catch (error) {
+    throw error
+  }
+}
+
 export const AuthServices = {
   loginService,
-  registerService
+  registerService,
+  forgotPasswordService
 }

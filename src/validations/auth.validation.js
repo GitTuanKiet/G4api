@@ -43,7 +43,23 @@ const registerValidation = async (req, res, next) => {
   }
 }
 
+const forgotPasswordValidation = async (req, res, next) => {
+  try {
+    const schemaForgotPassword = Joi.object({
+      email: Joi.string().email().required().messages({
+        'string.email': 'Email must be a valid email',
+        'string.empty': 'Email is required'
+      })
+    })
+    await schemaForgotPassword.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
+  } catch (error) {
+    next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )
+  }
+}
+
 export const AuthValidations = {
   loginValidation,
-  registerValidation
+  registerValidation,
+  forgotPasswordValidation
 }

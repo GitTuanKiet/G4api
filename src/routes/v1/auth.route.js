@@ -10,4 +10,8 @@ router.route('/login')
 
 router.route('/register')
   .post(AuthValidations.registerValidation, AuthControllers.registerController)
+
+router.route('/forgot-password')
+  .post(AuthValidations.forgotPasswordValidation, AuthControllers.forgotPasswordController)
+
 module.exports = router
