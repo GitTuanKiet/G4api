@@ -95,10 +95,37 @@ const updateUser = async (userId, data) => {
   }
 }
 
+const pushGiftCardIds = async (userId, giftCardId) => {
+  try {
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { giftIds: giftCardId } })
+  } catch (error) {
+    throw error
+  }
+}
+
+const pushVoucherIds = async (userId, voucherId) => {
+  try {
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { voucherIds: voucherId } })
+  } catch (error) {
+    throw error
+  }
+}
+
+const pushCouponIds = async (userId, couponId) => {
+  try {
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { couponIds: couponId } })
+  } catch (error) {
+    throw error
+  }
+}
+
 // export các hàm để sử dụng ở controller
 export const UserModels = {
   findOneById,
   findOneByEmail,
   createUser,
-  updateUser
+  updateUser,
+  pushGiftCardIds,
+  pushVoucherIds,
+  pushCouponIds
 }
