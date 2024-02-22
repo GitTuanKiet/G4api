@@ -1,6 +1,8 @@
 /* eslint-disable no-useless-catch */
 import { UserModels } from 'models/user.model'
 import bcrypt from 'bcrypt'
+import fs from 'fs'
+import path from 'path'
 
 // những field không được phép update
 const InvalidFields = ['_id', 'password', 'createdAt', 'updatedAt']
@@ -16,6 +18,14 @@ const updateProfile = async (userId, data) => {
     // tìm user theo id
     const user = await UserModels.findOneById(userId)
     if (!user) throw new Error('User not found')
+
+    // nếu thay avatar thì xóa avatar cũ trong uploads
+    if (data.avatar) {
+      if (user.avatar) {
+        const filePath = path.join('./', user.avatar)
+        await fs.promises.unlink(filePath)
+      }
+    }
 
     // update thông tin user
     const updateData = { ...data, updatedAt: new Date() }
