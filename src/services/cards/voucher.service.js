@@ -7,10 +7,6 @@ const InvalidFields = ['_id', 'userId', 'createdAt', 'updatedAt']
 
 const registerVoucher = async (userId, data) => {
   try {
-    // check if voucher already exists
-    const voucher = await VoucherModel.findOneByUserId(userId)
-    if (voucher) throw new Error('Voucher already exists')
-
     // lấy _id từ inserted
     const newVoucher = { userId: userId, ...data }
     const inserted = await VoucherModel.createVoucher(newVoucher)
@@ -23,6 +19,15 @@ const registerVoucher = async (userId, data) => {
   }
 }
 
+const fetchAllByUserId = async (userId) => {
+  try {
+    return await VoucherModel.fetchAllByUserId(userId)
+  } catch (error) {
+    throw error
+  }
+}
+
 export const VoucherServices = {
-  registerVoucher
+  registerVoucher,
+  fetchAllByUserId
 }

@@ -12,6 +12,18 @@ const registerVoucher = async (req, res, next) => {
   }
 }
 
+const fetchAllByUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.user
+    const result = await VoucherServices.fetchAllByUserId(userId)
+
+    return res.status(StatusCodes.OK).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const VoucherControllers = {
-  registerVoucher
+  registerVoucher,
+  fetchAllByUserId
 }

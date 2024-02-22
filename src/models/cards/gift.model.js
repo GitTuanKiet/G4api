@@ -41,13 +41,13 @@ const findOneById = async (giftCardId) => {
 }
 
 /**
- * function tìm giftCard theo userId
+ * function fetch giftCard theo userId
  * @param {*} userId
- * @returns {Promise<giftCard>}
+ * @returns {Promise<array<giftCard>>}
  */
-const findOneByUserId = async (userId) => {
+const fetchAllByUserId = async (userId) => {
   try {
-    return await getMongo().collection(GiftCardCollection).findOne({ userId: fixObjectId(userId) })
+    return await getMongo().collection(GiftCardCollection).find({ userId: fixObjectId(userId) }).toArray()
   } catch (error) {
     throw error
   }
@@ -69,42 +69,8 @@ const createGiftCard = async (data) => {
   }
 }
 
-/**
- * function cập nhật giftCard
- * @param {*} giftCardId
- * @param {*} data
- * @returns {Promise<giftCard>}
- */
-const updateGiftCard = async (giftCardId, data) => {
-  try {
-    const validated = await validateGiftCard(data)
-    return await getMongo().collection(GiftCardCollection).findOneAndUpdate(
-      { _id: fixObjectId(giftCardId) },
-      { $set: validated },
-      { returnDocument: 'after' }
-    )
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function xóa giftCard
- * @param {*} giftCardId
- * @returns {Promise<giftCard>}
- */
-const destroyGiftCard = async (giftCardId) => {
-  try {
-    return await getMongo().collection(GiftCardCollection).findOneAndDelete({ _id: fixObjectId(giftCardId) })
-  } catch (error) {
-    throw error
-  }
-}
-
 export const GiftCardModels = {
   findOneById,
-  findOneByUserId,
-  createGiftCard,
-  updateGiftCard,
-  destroyGiftCard
+  fetchAllByUserId,
+  createGiftCard
 }

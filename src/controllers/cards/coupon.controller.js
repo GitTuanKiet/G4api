@@ -12,6 +12,18 @@ const registerCoupon = async (req, res, next) => {
   }
 }
 
+const fetchAllByUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.user
+    const result = await CouponServices.fetchAllByUserId(userId)
+
+    return res.status(StatusCodes.OK).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const CouponControllers = {
-  registerCoupon
+  registerCoupon,
+  fetchAllByUserId
 }

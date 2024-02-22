@@ -13,6 +13,18 @@ const registerMemberCard = async (req, res, next) => {
   }
 }
 
+const lostMemberCard = async (req, res, next) => {
+  try {
+    const { userId } = req.user
+    const result = await MemberCardServices.lostMemberCard(userId)
+
+    return res.status(StatusCodes.OK).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const MemberCardControllers = {
-  registerMemberCard
+  registerMemberCard,
+  lostMemberCard
 }

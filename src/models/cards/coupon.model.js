@@ -41,13 +41,13 @@ const findOneById = async (couponId) => {
 }
 
 /**
- * function tìm coupon theo userId
+ * function fetch coupon theo userId
  * @param {*} userId
- * @returns {Promise<coupon>}
+ * @returns {Promise<array<coupon>>}
  */
-const findOneByUserId = async (userId) => {
+const fetchAllByUserId = async (userId) => {
   try {
-    return await getMongo().collection(CouponCollection).findOne({ userId: fixObjectId(userId) })
+    return await getMongo().collection(CouponCollection).find({ userId: fixObjectId(userId) }).toArray()
   } catch (error) {
     throw error
   }
@@ -70,6 +70,6 @@ const createCoupon = async (data) => {
 
 export const CouponModels = {
   findOneById,
-  findOneByUserId,
+  fetchAllByUserId,
   createCoupon
 }

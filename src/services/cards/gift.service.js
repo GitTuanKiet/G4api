@@ -7,10 +7,6 @@ const InvalidFields = ['_id', 'userId', 'createdAt', 'updatedAt']
 
 const registerGiftCard = async (userId, data) => {
   try {
-    // check if gift card already exists
-    const giftCard = await GiftCardModels.findOneByUserId(userId)
-    if (giftCard) throw new Error('Gift card already exists')
-
     // lấy _id từ inserted
     const newGiftCard = { userId: userId, ...data }
     const inserted = await GiftCardModels.createGiftCard(newGiftCard)
@@ -23,6 +19,15 @@ const registerGiftCard = async (userId, data) => {
   }
 }
 
+const fetchAllByUserId = async (userId) => {
+  try {
+    return await GiftCardModels.fetchAllByUserId(userId)
+  } catch (error) {
+    throw error
+  }
+}
+
 export const GiftCardServices = {
-  registerGiftCard
+  registerGiftCard,
+  fetchAllByUserId
 }

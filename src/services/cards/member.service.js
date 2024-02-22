@@ -34,6 +34,21 @@ const registerMemberCard = async (userId, data) => {
   }
 }
 
+const lostMemberCard = async (userId) => {
+  try {
+    // check if member card already exists
+    const memberCard = await MemberCardModels.findOneByUserId(userId)
+    if (!memberCard) throw new Error('Member card not found')
+
+    // update user memberCardId
+    await UserModels.updateUser(userId, { memberCardId: null })
+    return await MemberCardModels.deleteMemberCard(memberCard._id)
+  } catch (error) {
+    throw error
+  }
+}
+
 export const MemberCardServices = {
-  registerMemberCard
+  registerMemberCard,
+  lostMemberCard
 }

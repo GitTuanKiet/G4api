@@ -91,7 +91,7 @@ const updateMemberCard = async (memberCardId, data) => {
  * @param {*} memberCardId
  * @returns {Promise<memberCard>}
  */
-const destroyMemberCard = async (memberCardId) => {
+const deleteMemberCard = async (memberCardId) => {
   try {
     return await getMongo().collection(MemberCardCollection).deleteOne({ _id: fixObjectId(memberCardId) })
   } catch (error) {
@@ -104,5 +104,5 @@ export const MemberCardModels = {
   findOneByUserId,
   createMemberCard,
   updateMemberCard,
-  destroyMemberCard
+  deleteMemberCard
 }

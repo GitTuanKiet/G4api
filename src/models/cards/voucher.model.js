@@ -41,13 +41,13 @@ const findOneById = async (voucherId) => {
 }
 
 /**
- * function tìm voucher theo userId
+ * function fetch voucher theo userId
  * @param {*} userId
- * @returns {Promise<voucher>}
+ * @returns {Promise<array<voucher>>}
  */
-const findOneByUserId = async (userId) => {
+const fetchAllByUserId = async (userId) => {
   try {
-    return await getMongo().collection(VoucherCollection).findOne({ userId: fixObjectId(userId) })
+    return await getMongo().collection(VoucherCollection).find({ userId: fixObjectId(userId) }).toArray()
   } catch (error) {
     throw error
   }
@@ -70,6 +70,6 @@ const createVoucher = async (data) => {
 
 export const VoucherModel = {
   findOneById,
-  findOneByUserId,
+  fetchAllByUserId,
   createVoucher
 }

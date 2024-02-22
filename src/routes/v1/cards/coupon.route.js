@@ -8,5 +8,7 @@ const router = express.Router()
 router.route('/register')
   .post(CouponValidations.registerCoupon, CouponControllers.registerCoupon)
 
+router.route('/fetch-all')
+  .get(CouponControllers.fetchAllByUserId)
 
 module.exports = router
