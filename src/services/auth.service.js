@@ -63,8 +63,23 @@ const forgotPasswordService = async (data) => {
   }
 }
 
+const refreshTokenService = async (data) => {
+  try {
+    // verify token
+    const decoded = Jwt.verify(data.token, ENV.JWT_SECRET)
+
+    // tạo token mới và trả về
+    const token = Jwt.sign({ id: decoded.id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+
+    return { token }
+  } catch (error) {
+    throw error
+  }
+}
+
 export const AuthServices = {
   loginService,
   registerService,
-  forgotPasswordService
+  forgotPasswordService,
+  refreshTokenService
 }

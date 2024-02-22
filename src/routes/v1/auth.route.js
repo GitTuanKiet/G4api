@@ -14,4 +14,7 @@ router.route('/register')
 router.route('/forgot-password')
   .post(AuthValidations.forgotPasswordValidation, AuthControllers.forgotPasswordController)
 
+router.route('/refresh-token')
+  .post(AuthValidations.refreshTokenValidation, AuthControllers.refreshTokenController)
+
 module.exports = router

@@ -31,9 +31,20 @@ const forgotPasswordController = async (req, res, next) => {
   }
 }
 
+const refreshTokenController = async (req, res, next) => {
+  try {
+    const token = await AuthServices.refreshTokenService(req.body)
+
+    return res.status(StatusCodes.OK).json(token)
+  } catch (error) {
+    next(error)
+  }
+}
+
 
 export const AuthControllers = {
   loginController,
   registerController,
-  forgotPasswordController
+  forgotPasswordController,
+  refreshTokenController
 }

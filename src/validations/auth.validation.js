@@ -58,8 +58,23 @@ const forgotPasswordValidation = async (req, res, next) => {
   }
 }
 
+const refreshTokenValidation = async (req, res, next) => {
+  try {
+    const schemaRefreshToken = Joi.object({
+      refreshToken: Joi.string().required().messages({
+        'string.empty': 'Refresh token is required'
+      })
+    })
+    await schemaRefreshToken.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
+  } catch (error) {
+    next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )
+  }
+}
+
 export const AuthValidations = {
   loginValidation,
   registerValidation,
-  forgotPasswordValidation
+  forgotPasswordValidation,
+  refreshTokenValidation
 }
