@@ -12,7 +12,7 @@ const updateProfile = async (req, res, next) => {
       address: Joi.string(),
       birthday: Joi.date(),
       gender: Joi.string().valid('male', 'female', 'none'),
-      avatar: Joi.string(),
+      // avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/),
       PIN: Joi.number(),
 
       // _id của các collection khác

@@ -15,6 +15,7 @@ router.use('/auth', require('./auth.route'))
 // verify token middleware
 router.use(require('middlewares/verifyJWT'))
 
+router.use('/upload', require('./upload.route'))
 router.use('/user', require('./user.route'))
 router.use('/card', require('./cards/card.route'))
 

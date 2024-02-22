@@ -14,7 +14,7 @@ const schemaCreateUser = Joi.object({
   phone: Joi.string().regex(/^[0-9]{10}$/).default(''),
   address: Joi.string().default(''),
   gender: Joi.string().valid('male', 'female', 'none').default('none'),
-  avatar: Joi.string().default(''),
+  avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/),
   birthday: Joi.date().default(null),
 
   // _id của các collection khác
@@ -89,7 +89,7 @@ const createUser = async (data) => {
 
 const updateUser = async (userId, data) => {
   try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $set: data })
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $set: data }, { returnDocument: 'after' })
   } catch (error) {
     throw error
   }
@@ -97,7 +97,7 @@ const updateUser = async (userId, data) => {
 
 const pushGiftCardIds = async (userId, giftCardId) => {
   try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { giftIds: giftCardId } })
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { giftIds: giftCardId } }, { returnDocument: 'after' })
   } catch (error) {
     throw error
   }
@@ -105,7 +105,7 @@ const pushGiftCardIds = async (userId, giftCardId) => {
 
 const pushVoucherIds = async (userId, voucherId) => {
   try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { voucherIds: voucherId } })
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { voucherIds: voucherId } }, { returnDocument: 'after' })
   } catch (error) {
     throw error
   }
@@ -113,7 +113,7 @@ const pushVoucherIds = async (userId, voucherId) => {
 
 const pushCouponIds = async (userId, couponId) => {
   try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { couponIds: couponId } })
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { couponIds: couponId } }, { returnDocument: 'after' })
   } catch (error) {
     throw error
   }
