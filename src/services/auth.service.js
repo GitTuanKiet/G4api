@@ -5,19 +5,28 @@ import Jwt from 'jsonwebtoken'
 import { ENV } from 'config/environment'
 
 const loginService = async (data) => {
+  const { email, password } = data
   try {
     // tìm user theo email
-    const user = await UserModels.findOneByEmail(data.email)
+    const user = await UserModels.findOneByEmail(email)
     if (!user) throw new Error('Email not found')
 
     // so sánh password
-    const isMatch = bcrypt.compareSync(data.password, user.password)
+    const isMatch = bcrypt.compareSync(password, user.password)
     if (!isMatch) throw new Error('Password is incorrect')
 
-    // tạo token và trả về
-    const token = Jwt.sign({ id: user._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    // const payload = {
+    //   id: user._id,
+    //   email: user.email,
+    //   name: user.name
+    // }
 
-    return { token }
+    // exclude password field
+    delete user.password
+    // tạo token và refresh token => trả về
+    const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const refreshToken = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
+    return { token, refreshToken }
   } catch (error) {
     throw error
   }
@@ -36,10 +45,15 @@ const registerService = async (data) => {
     // tạo mới user
     const newUser = await UserModels.createUser(data)
 
-    // login và trả về token
-    const token = Jwt.sign({ id: newUser.insertedId }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    // attach user
 
-    return { token }
+    const newlyUserSaved = await UserModels.findOneById(newUser.insertedId)
+    delete user.password
+
+    // login và trả về token và refresh token
+    const token = Jwt.sign({ user: newlyUserSaved }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const refreshToken = Jwt.sign({ user: newlyUserSaved }, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
+    return { token, refreshToken }
   } catch (error) {
     throw error
   }

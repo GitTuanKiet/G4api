@@ -12,6 +12,7 @@ const schemaCreateUser = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
   phone: Joi.string().regex(/^[0-9]{10}$/).default(''),
+  city: Joi.string().default(''),
   address: Joi.string().default(''),
   gender: Joi.string().valid('male', 'female', 'none').default('none'),
   avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/),
