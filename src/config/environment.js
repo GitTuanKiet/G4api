@@ -14,7 +14,6 @@ export const ENV = {
   // JWT
   JWT_SECRET: process.env.JWT_SECRET,
   EXPIRES_IN: process.env.EXPIRES_IN,
-  REFRESH_EXPIRES_IN: process.env.EXPIRES_IN,
 
   // PAYPAL
   PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
