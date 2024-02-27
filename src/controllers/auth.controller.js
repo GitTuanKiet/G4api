@@ -13,9 +13,19 @@ const loginController = async (req, res, next) => {
 
 const registerController = async (req, res, next) => {
   try {
-    const user = await AuthServices.registerService(req.body)
+    await AuthServices.registerService(req.body)
 
-    return res.status(StatusCodes.CREATED).json(user)
+    return res.status(StatusCodes.CREATED).json({ message: 'Register successfully. Please check your email to verify account' })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const verifyEmailController = async (req, res, next) => {
+  try {
+    await AuthServices.verifyEmailService(req.params.token)
+
+    return res.status(StatusCodes.OK).json({ message: 'Verify email successfully' })
   } catch (error) {
     next(error)
   }
@@ -55,6 +65,7 @@ const refreshTokenController = async (req, res, next) => {
 export const AuthControllers = {
   loginController,
   registerController,
+  verifyEmailController,
   forgotPasswordController,
   resetPasswordController,
   refreshTokenController

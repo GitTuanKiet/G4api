@@ -10,7 +10,7 @@ export const DOMAINS = [
 export const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/
 export const OBJECT_ID_MESSAGE = { 'string.pattern.base': 'Invalid ObjectId' }
 
-// paypal api
+// paypal
 const getApiUrl = (PATH) => path.join('https://api-m.sandbox.paypal.com', PATH)
 const getClientCredentials = () => {
   return Buffer.from(`${ENV.PAYPAL_CLIENT_ID}:${ENV.PAYPAL_CLIENT_SECRET}`).toString('base64')

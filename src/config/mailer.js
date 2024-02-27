@@ -10,3 +10,15 @@ export default nodemailer.createTransport({
     pass: ENV.MAIL_PASS
   }
 })
+
+export const sendMail = (mailOptions) => {
+  return new Promise((resolve, reject) => {
+    nodemailer.createTransport().sendMail(mailOptions, (error, info) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(info)
+      }
+    })
+  })
+}

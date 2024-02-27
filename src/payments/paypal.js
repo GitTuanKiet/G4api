@@ -222,4 +222,4 @@ const voidOrder = async (accessToken, orderId) => {
   }
 }
 
-export const PaypalApis = { getAccessToken, createOrder, captureOrder, refundOrder, voidOrder }
+export const Paypal = { getAccessToken, createOrder, captureOrder, refundOrder, voidOrder }

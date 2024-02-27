@@ -5,7 +5,7 @@ import ApiError from 'utils/ApiError'
 
 const createOrderValidation = async (req, res, next) => {
   try {
-    // xem example OrderData ở api/paypal.api.js
+    // xem example OrderData ở payments/paypal.api.js
     const schemaCreateOrder = Joi.object({
       intent: Joi.string().valid('CAPTURE', 'AUTHORIZE').required(),
       purchase_units: Joi.array().items(Joi.object({

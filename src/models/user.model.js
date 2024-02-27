@@ -27,7 +27,7 @@ const schemaCreateUser = Joi.object({
   role: Joi.string().valid('user', 'admin').default('user'),
   POINTS: Joi.number().default(0),
   PIN: Joi.number().default(0),
-  // isEmailVerified: Joi.boolean().default(false),
+  isEmailVerified: Joi.boolean().default(false),
   // emailVerificationToken: Joi.string().default(''),
   // passwordResetToken: Joi.string().default(''),
   // passwordResetExpires: Joi.date().default(null),

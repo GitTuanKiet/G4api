@@ -5,8 +5,6 @@ import compression from 'compression'
 import { connectMongo, disconnectMongo } from 'config/mongodb'
 import { ENV } from 'config/environment'
 
-import { getAuth, createOrder } from 'api/paypal.api'
-
 const { PORT, HOST, AUTHOR, NODE_ENV } = ENV
 
 const START_SERVER = () => {

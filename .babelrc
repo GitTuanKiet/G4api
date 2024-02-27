@@ -4,7 +4,7 @@
     ["@babel/transform-runtime"],
     ["module-resolver", {
        "alias": { 
-        "api": "./src/api",
+        "payments": "./src/payments",
         "config": "./src/config",
         "controllers": "./src/controllers",
         "middlewares": "./src/middlewares",

@@ -3,7 +3,7 @@ import { UserModels } from 'models/user.model'
 import bcrypt from 'bcrypt'
 import Jwt from 'jsonwebtoken'
 import { ENV } from 'config/environment'
-import mailer from 'config/mailer'
+import { sendMail } from 'config/mailer'
 
 const loginService = async (data) => {
   const { email, password } = data
@@ -11,6 +11,9 @@ const loginService = async (data) => {
     // tìm user theo email
     const user = await UserModels.findOneByEmail(email)
     if (!user) throw new Error('Email not found')
+
+    // check email verified
+    if (!user.isEmailVerified) throw new Error('Email is not verified')
 
     // so sánh password
     const isMatch = bcrypt.compareSync(password, user.password)
@@ -44,10 +47,34 @@ const registerService = async (data) => {
     const newlyUserSaved = await UserModels.findOneById(newUser.insertedId)
     delete newlyUserSaved.password
 
-    // login và trả về token
-    const token = Jwt.sign({ user: newlyUserSaved }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
-    const refreshToken = Jwt.sign({}, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
-    return { token, refreshToken }
+    // tạo verifyEmailToken và gửi email
+    const verifyEmailToken = Jwt.sign({ id: newlyUserSaved._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+
+    // gửi email
+    const mailOptions = {
+      from: ENV.MAIL_USER,
+      to: newlyUserSaved.email,
+      subject: 'Verify email',
+      html: 'Click <a href="' + ENV.URL + '/auth/verify-email/' + verifyEmailToken + '">here</a> to verify email'
+    }
+
+    await sendMail(mailOptions)
+  } catch (error) {
+    throw error
+  }
+}
+
+const verifyEmailService = async (token) => {
+  try {
+    // verify token
+    const decoded = Jwt.verify(token, ENV.JWT_SECRET)
+
+    // tìm user theo id
+    const user = await UserModels.findOneById(decoded.user)
+    if (!user) throw new Error('User not found')
+
+    // cập nhật user
+    await UserModels.updateUser(decoded.id, { isEmailVerified: true })
   } catch (error) {
     throw error
   }
@@ -63,16 +90,14 @@ const forgotPasswordService = async (data) => {
     const token = Jwt.sign({ id: user._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
 
     // gửi email
-    mailer.sendMail({
+    const mailOptions = {
       from: ENV.MAIL_USER,
       to: user.email,
       subject: 'Reset password',
       html: 'Click <a href="' + ENV.URL + '/auth/reset-password/' + token + '">here</a> to reset password'
-    }, (err, info) => {
-      if (err) throw err
-      console.log('Email sent: ' + info.response)
-    })
+    }
 
+    await sendMail(mailOptions)
   } catch (error) {
     throw error
   }
@@ -95,15 +120,15 @@ const resetPasswordService = async (token) => {
     // cập nhật password
     await UserModels.updateUser(decoded.id, { password: password })
 
-    mailer.sendMail({
+    // gửi email
+    const mailOptions = {
       from: ENV.MAIL_USER,
       to: user.email,
       subject: 'Reset password',
       html: 'Reset password successfully with new password: ' + password
-    }, (err, info) => {
-      if (err) throw err
-      console.log('Email sent: ' + info.response)
-    })
+    }
+
+    await sendMail(mailOptions)
   } catch (error) {
     throw error
   }
@@ -131,6 +156,7 @@ const refreshTokenService = async (data) => {
 export const AuthServices = {
   loginService,
   registerService,
+  verifyEmailService,
   forgotPasswordService,
   resetPasswordService,
   refreshTokenService

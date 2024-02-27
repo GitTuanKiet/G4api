@@ -17,6 +17,9 @@ router.route('/forgot-password')
 router.route('/reset-password/:token')
   .get(AuthControllers.resetPasswordController)
 
+router.route('/verify-email/:token')
+  .get(AuthControllers.verifyEmailController)
+
 router.route('/refresh-token')
   .post(AuthValidations.refreshTokenValidation, AuthControllers.refreshTokenController)
 
