@@ -23,9 +23,19 @@ const registerController = async (req, res, next) => {
 
 const forgotPasswordController = async (req, res, next) => {
   try {
-    const token = await AuthServices.forgotPasswordService(req.body)
+    await AuthServices.forgotPasswordService(req.body)
 
-    return res.status(StatusCodes.OK).json(token)
+    return res.status(StatusCodes.OK).json({ message: 'Please check your email to reset password' })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const resetPasswordController = async (req, res, next) => {
+  try {
+    await AuthServices.resetPasswordService(req.params.token)
+
+    return res.status(StatusCodes.OK).json({ message: 'Reset password successfully' })
   } catch (error) {
     next(error)
   }
@@ -46,5 +56,6 @@ export const AuthControllers = {
   loginController,
   registerController,
   forgotPasswordController,
+  resetPasswordController,
   refreshTokenController
 }

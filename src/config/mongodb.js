@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable no-console */
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import { ENV } from 'config/environment'
@@ -20,7 +21,7 @@ export const connectMongo = async () => {
     dbInstance = clientMongo.db(MONGO_DB)
     console.log('Connected successfully to server')
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 
@@ -29,7 +30,7 @@ export const disconnectMongo = async () => {
     await clientMongo.close()
     console.log('Disconnected successfully to server')
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 

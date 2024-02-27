@@ -14,6 +14,9 @@ router.route('/register')
 router.route('/forgot-password')
   .post(AuthValidations.forgotPasswordValidation, AuthControllers.forgotPasswordController)
 
+router.route('/reset-password/:token')
+  .get(AuthControllers.resetPasswordController)
+
 router.route('/refresh-token')
   .post(AuthValidations.refreshTokenValidation, AuthControllers.refreshTokenController)
 

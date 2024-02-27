@@ -16,17 +16,17 @@ const schemaCreateUser = Joi.object({
   address: Joi.string().default(''),
   gender: Joi.string().valid('male', 'female', 'none').default('none'),
   avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/),
-  birthday: Joi.date().default(null),
+  birthday: Joi.date().default(new Date()),
 
   // _id của các collection khác
-  memberCardId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).default(null),
+  memberCardId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).default(''),
   voucherIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
   giftIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
   couponIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
 
   role: Joi.string().valid('user', 'admin').default('user'),
   POINTS: Joi.number().default(0),
-  PIN: Joi.number().default(null),
+  PIN: Joi.number().default(0),
   // isEmailVerified: Joi.boolean().default(false),
   // emailVerificationToken: Joi.string().default(''),
   // passwordResetToken: Joi.string().default(''),

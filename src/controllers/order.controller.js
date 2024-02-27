@@ -6,7 +6,7 @@ const createOrderController = async (req, res, next) => {
     const { userId } = req.user
     const url = await OrderServices.createOrder(userId, req.body)
 
-    url ? res.redirect(url.href) : res.status(StatusCodes.BAD_REQUEST).json({ message: 'Failed to create order' })
+    return url ? res.redirect(url.href) : res.status(StatusCodes.BAD_REQUEST).json({ message: 'Failed to create order' })
   } catch (error) {
     next(error)
   }

@@ -3,6 +3,7 @@ import { UserModels } from 'models/user.model'
 import bcrypt from 'bcrypt'
 import Jwt from 'jsonwebtoken'
 import { ENV } from 'config/environment'
+import mailer from 'config/mailer'
 
 const loginService = async (data) => {
   const { email, password } = data
@@ -19,7 +20,8 @@ const loginService = async (data) => {
     delete user.password
     // tạo token và trả về
     const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
-    return { token }
+    const refreshToken = Jwt.sign({}, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
+    return { token, refreshToken }
   } catch (error) {
     throw error
   }
@@ -40,11 +42,12 @@ const registerService = async (data) => {
 
     // attach user
     const newlyUserSaved = await UserModels.findOneById(newUser.insertedId)
-    delete user.password
+    delete newlyUserSaved.password
 
     // login và trả về token
     const token = Jwt.sign({ user: newlyUserSaved }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
-    return { token }
+    const refreshToken = Jwt.sign({}, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
+    return { token, refreshToken }
   } catch (error) {
     throw error
   }
@@ -60,9 +63,47 @@ const forgotPasswordService = async (data) => {
     const token = Jwt.sign({ id: user._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
 
     // gửi email
-    // ...
+    mailer.sendMail({
+      from: ENV.MAIL_USER,
+      to: user.email,
+      subject: 'Reset password',
+      html: 'Click <a href="' + ENV.URL + '/auth/reset-password/' + token + '">here</a> to reset password'
+    }, (err, info) => {
+      if (err) throw err
+      console.log('Email sent: ' + info.response)
+    })
 
-    return { token }
+  } catch (error) {
+    throw error
+  }
+}
+
+const resetPasswordService = async (token) => {
+  try {
+    // verify token
+    const decoded = Jwt.verify(token, ENV.JWT_SECRET)
+
+    // tìm user theo id
+    const user = await UserModels.findOneById(decoded.id)
+    if (!user) throw new Error('User not found')
+
+    // hash password
+    const salt = bcrypt.genSaltSync(10)
+    let password = Math.random().toString(36).substring(7)
+    password = bcrypt.hashSync(password, salt)
+
+    // cập nhật password
+    await UserModels.updateUser(decoded.id, { password: password })
+
+    mailer.sendMail({
+      from: ENV.MAIL_USER,
+      to: user.email,
+      subject: 'Reset password',
+      html: 'Reset password successfully with new password: ' + password
+    }, (err, info) => {
+      if (err) throw err
+      console.log('Email sent: ' + info.response)
+    })
   } catch (error) {
     throw error
   }
@@ -73,8 +114,13 @@ const refreshTokenService = async (data) => {
     // verify token
     const decoded = Jwt.verify(data.token, ENV.JWT_SECRET)
 
+    // tìm user theo id
+    const user = await UserModels.findOneById(decoded.id)
+    if (!user) throw new Error('User not found')
+    delete user.password
+
     // tạo token mới và trả về
-    const token = Jwt.sign({ id: decoded.id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const token = Jwt.sign({ user }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
 
     return { token }
   } catch (error) {
@@ -86,5 +132,6 @@ export const AuthServices = {
   loginService,
   registerService,
   forgotPasswordService,
+  resetPasswordService,
   refreshTokenService
 }
