@@ -20,3 +20,7 @@ export const fixObjectId = (id) => {
   // if (id.length !== 24) return id
   return new ObjectId(id)
 }
+
+export const VNDtoUSD = (vnd) => {
+  return Math.floor(vnd / 23000)
+}

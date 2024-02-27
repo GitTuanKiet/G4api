@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { OrderModels } from 'models/order.model'
-import { Paypal } from 'payments/paypal'
+import { Paypal } from 'payments/paypal/paypal'
 
 const InvalidFields = ['_id', 'application_context']
 

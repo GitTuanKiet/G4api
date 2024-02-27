@@ -23,6 +23,7 @@ const schemaCreateUser = Joi.object({
   voucherIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
   giftIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
   couponIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
+  orderIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
 
   role: Joi.string().valid('user', 'admin').default('user'),
   POINTS: Joi.number().default(0),
@@ -120,6 +121,14 @@ const pushCouponIds = async (userId, couponId) => {
   }
 }
 
+const pushOrderIds = async (userId, orderId) => {
+  try {
+    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { orderIds: orderId } }, { returnDocument: 'after' })
+  } catch (error) {
+    throw error
+  }
+}
+
 // export các hàm để sử dụng ở controller
 export const UserModels = {
   findOneById,
@@ -128,5 +137,6 @@ export const UserModels = {
   updateUser,
   pushGiftCardIds,
   pushVoucherIds,
-  pushCouponIds
+  pushCouponIds,
+  pushOrderIds
 }
