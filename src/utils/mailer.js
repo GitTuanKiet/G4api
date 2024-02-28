@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import { ENV } from '../config/environment'
 
-export default nodemailer.createTransport({
+const mailer = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
   secure: false,
@@ -13,7 +13,7 @@ export default nodemailer.createTransport({
 
 export const sendMail = (mailOptions) => {
   return new Promise((resolve, reject) => {
-    nodemailer.createTransport().sendMail(mailOptions, (error, info) => {
+    mailer.sendMail(mailOptions, (error, info) => {
       if (error) {
         reject(error)
       } else {

@@ -1,6 +1,8 @@
 import Joi from 'joi'
 import { getApiUrl, getClientCredentials } from 'utils/constants'
 import { VNDtoUSD } from 'utils/formatters'
+import ApiError from 'utils/ApiError'
+import { StatusCodes } from 'http-status-codes'
 
 // getAccessToken - hàm này dùng để lấy access token
 const getAccessToken = async () => {
@@ -22,7 +24,7 @@ const getAccessToken = async () => {
         throw error
       })
   } catch (error) {
-    throw new Error('Failed to get access token: ' + error.message)
+    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to get access token: ' + error.message)
   }
 }
 
@@ -93,7 +95,7 @@ const createOrder = async (data, accessToken) => {
         throw error
       })
   } catch (error) {
-    throw new Error('Failed to create order: ' + error.message)
+    throw new ApiError(StatusCodes.PRECONDITION_FAILED, 'Failed to create order: ' + error.message)
   }
 }
 
@@ -115,7 +117,7 @@ const getOrder = async (orderId, accessToken) => {
         throw error
       })
   } catch (error) {
-    throw new Error('Failed to get order: ' + error.message)
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to get order: ' + error.message)
   }
 }
 
@@ -137,7 +139,7 @@ const captureOrder = async (orderId, accessToken) => {
         throw error
       })
   } catch (error) {
-    throw new Error('Failed to capture order: ' + error.message)
+    throw new ApiError(StatusCodes.BAD_REQUEST,'Failed to capture order: ' + error.message)
   }
 }
 

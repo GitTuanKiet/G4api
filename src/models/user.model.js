@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
-import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
+import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE, UPLOAD_REGEX } from 'utils/constants'
 import { fixObjectId } from 'utils/formatters'
 
 const UserCollection = 'users'
@@ -15,7 +15,7 @@ const schemaCreateUser = Joi.object({
   city: Joi.string().default(''),
   address: Joi.string().default(''),
   gender: Joi.string().valid('male', 'female', 'none').default('none'),
-  avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/),
+  avatar: Joi.string().pattern(UPLOAD_REGEX),
   birthday: Joi.date().default(new Date()),
 
   // _id của các collection khác

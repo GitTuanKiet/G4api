@@ -2,6 +2,8 @@
 import { MemberCardModels } from 'models/cards/member.model'
 import { UserModels } from 'models/user.model'
 import { fixObjectId } from 'utils/formatters'
+import ApiError from 'utils/ApiError'
+import { StatusCodes } from 'http-status-codes'
 
 const InvalidFields = ['_id', 'userId', 'createdAt', 'updatedAt']
 
@@ -9,11 +11,11 @@ const registerMemberCard = async (userId, data) => {
   try {
     // check if member card already exists
     const memberCard = await MemberCardModels.findOneByUserId(userId)
-    if (memberCard) throw new Error('Member card already exists')
+    if (memberCard) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Member card already exists')
 
     // calculate level card based on points
     const user = await UserModels.findOneById(userId)
-    if (!user) throw new Error('User not found')
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
 
     const points = user.POINTS
     let level = 'iron'
@@ -38,7 +40,7 @@ const lostMemberCard = async (userId) => {
   try {
     // check if member card already exists
     const memberCard = await MemberCardModels.findOneByUserId(userId)
-    if (!memberCard) throw new Error('Member card not found')
+    if (!memberCard) throw new ApiError(StatusCodes.NOT_FOUND, 'Member card not found')
 
     // update user memberCardId
     await UserModels.updateUser(userId, { memberCardId: null })

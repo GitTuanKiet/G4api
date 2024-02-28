@@ -3,6 +3,8 @@ import { UserModels } from 'models/user.model'
 import bcrypt from 'bcrypt'
 import fs from 'fs'
 import path from 'path'
+import { StatusCodes } from 'http-status-codes'
+import ApiError from 'utils/ApiError'
 
 // những field không được phép update
 const InvalidFields = ['_id', 'password', 'createdAt', 'updatedAt']
@@ -17,7 +19,7 @@ const updateProfile = async (userId, data) => {
   try {
     // tìm user theo id
     const user = await UserModels.findOneById(userId)
-    if (!user) throw new Error('User not found')
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
 
     // nếu thay avatar thì xóa avatar cũ trong uploads
     if (data.avatar) {
@@ -39,11 +41,11 @@ const changePassword = async (userId, data) => {
   try {
     // tìm user theo id
     const user = await UserModels.findOneById(userId)
-    if (!user) throw new Error('User not found')
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
 
     // so sánh password
     const isMatch = bcrypt.compareSync(data.oldPassword, user.password)
-    if (!isMatch) throw new Error('Old password is incorrect')
+    if (!isMatch) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Old password is incorrect')
 
     // hash new password và update
     const salt = bcrypt.genSaltSync(10)

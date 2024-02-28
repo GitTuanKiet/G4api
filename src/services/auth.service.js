@@ -4,20 +4,22 @@ import bcrypt from 'bcrypt'
 import Jwt from 'jsonwebtoken'
 import { ENV } from 'config/environment'
 import { sendMail } from 'utils/mailer'
+import ApiError from 'utils/ApiError'
+import { StatusCodes } from 'http-status-codes'
 
 const loginService = async (data) => {
   const { email, password } = data
   try {
     // tìm user theo email
     const user = await UserModels.findOneByEmail(email)
-    if (!user) throw new Error('Email not found')
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'Email not found')
 
     // check email verified
-    if (!user.isEmailVerified) throw new Error('Email is not verified')
+    if (!user.isEmailVerified) throw new ApiError(StatusCodes.UNAUTHORIZED, 'Email is not verified')
 
     // so sánh password
     const isMatch = bcrypt.compareSync(password, user.password)
-    if (!isMatch) throw new Error('Password is incorrect')
+    if (!isMatch) throw new ApiError(StatusCodes.NON_AUTHORITATIVE_INFORMATION, 'Password is incorrect')
 
     // exclude password field
     delete user.password
@@ -34,7 +36,7 @@ const registerService = async (data) => {
   try {
     // tìm user theo email
     const user = await UserModels.findOneByEmail(data.email)
-    if (user) throw new Error('Email already exists')
+    if (user) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Email already exists')
 
     // hash password
     const salt = bcrypt.genSaltSync(10)
@@ -70,8 +72,8 @@ const verifyEmailService = async (token) => {
     const decoded = Jwt.verify(token, ENV.JWT_SECRET)
 
     // tìm user theo id
-    const user = await UserModels.findOneById(decoded.user)
-    if (!user) throw new Error('User not found')
+    const user = await UserModels.findOneById(decoded.id)
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
 
     // cập nhật user
     await UserModels.updateUser(decoded.id, { isEmailVerified: true })
@@ -84,7 +86,7 @@ const forgotPasswordService = async (data) => {
   try {
     // tìm user theo email
     const user = await UserModels.findOneByEmail(data.email)
-    if (!user) throw new Error('Email not found')
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'Email not found')
 
     // tạo token và gửi email
     const token = Jwt.sign({ id: user._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
@@ -110,7 +112,7 @@ const resetPasswordService = async (token) => {
 
     // tìm user theo id
     const user = await UserModels.findOneById(decoded.id)
-    if (!user) throw new Error('User not found')
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
 
     // hash password
     const salt = bcrypt.genSaltSync(10)
@@ -141,7 +143,7 @@ const refreshTokenService = async (data) => {
 
     // tìm user theo id
     const user = await UserModels.findOneById(decoded.id)
-    if (!user) throw new Error('User not found')
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
     delete user.password
 
     // tạo token mới và trả về
