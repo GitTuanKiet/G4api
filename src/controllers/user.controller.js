@@ -6,10 +6,9 @@ const updateProfile = async (req, res) => {
   try {
     const { _id } = req.user
     const data = req.body
-    const user = await UserServices.updateProfile(_id, data)
-    delete user.password
+    const token = await UserServices.updateProfile(_id, data)
 
-    return res.status(StatusCodes.OK).json(user)
+    return res.status(StatusCodes.OK).json({ token })
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
   }

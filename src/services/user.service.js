@@ -5,6 +5,8 @@ import fs from 'fs'
 import path from 'path'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
+import Jwt from 'jsonwebtoken'
+import { ENV } from 'config/environment'
 
 // những field không được phép update
 const InvalidFields = ['_id', 'password', 'createdAt', 'updatedAt']
@@ -18,20 +20,26 @@ const updateProfile = async (userId, data) => {
   }
   try {
     // tìm user theo id
-    const user = await UserModels.findOneById(userId)
-    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+    const check = await UserModels.findOneById(userId)
+    if (!check) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
 
     // nếu thay avatar thì xóa avatar cũ trong uploads
     if (data.avatar) {
-      if (user.avatar) {
-        const filePath = path.join('./', user.avatar)
+      if (check.avatar) {
+        const filePath = path.join('./', check.avatar)
         await fs.promises.unlink(filePath)
       }
     }
 
     // update thông tin user
     const updateData = { ...data, updatedAt: new Date() }
-    return await UserModels.updateUser(userId, updateData)
+    const user = await UserModels.updateUser(userId, updateData)
+
+    // tạo lại token với thông tin mới
+    delete user.password
+    const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+
+    return token
   } catch (error) {
     throw error
   }
