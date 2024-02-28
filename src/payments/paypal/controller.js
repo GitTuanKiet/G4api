@@ -7,7 +7,7 @@ let accessToken = ''
 
 const createOrderController = async (req, res, next) => {
   try {
-    const { userId } = req.user
+    const { _id } = req.user
 
     // Lấy access token
     if (!accessToken) {
@@ -30,7 +30,7 @@ const createOrderController = async (req, res, next) => {
 
     // Lưu đơn hàng vào database
     const order = await OrderModels.createOrder({
-      userId,
+      userId : _id,
       payment: 'paypal',
       orderId: data.id,
       status: data.status,
@@ -40,7 +40,7 @@ const createOrderController = async (req, res, next) => {
     })
 
     // Lưu id đơn hàng vào user
-    await UserModels.pushOrderIds(userId, order.insertedId)
+    await UserModels.pushOrderIds(_id, order.insertedId)
 
     // Chuyển hướng đến trang thanh toán
     return res.redirect(data.links?.find(link => link.rel === 'approve')?.href)

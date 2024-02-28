@@ -3,8 +3,8 @@ import { OrderServices } from 'services/order.service'
 
 const createOrderController = async (req, res, next) => {
   try {
-    const { userId } = req.user
-    const url = await OrderServices.createOrder(userId, req.body)
+    const { _id } = req.user
+    const url = await OrderServices.createOrder(_id, req.body)
 
     return url ? res.redirect(url.href) : res.status(StatusCodes.BAD_REQUEST).json({ message: 'Failed to create order' })
   } catch (error) {

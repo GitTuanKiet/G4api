@@ -4,8 +4,8 @@ import { MemberCardServices } from 'services/cards/member.service'
 
 const registerMemberCard = async (req, res, next) => {
   try {
-    const { userId } = req.user
-    const result = await MemberCardServices.registerMemberCard(userId, req.body)
+    const { _id } = req.user
+    const result = await MemberCardServices.registerMemberCard(_id, req.body)
 
     return res.status(StatusCodes.OK).json(result)
   } catch (error) {
@@ -15,8 +15,8 @@ const registerMemberCard = async (req, res, next) => {
 
 const lostMemberCard = async (req, res, next) => {
   try {
-    const { userId } = req.user
-    const result = await MemberCardServices.lostMemberCard(userId)
+    const { _id } = req.user
+    const result = await MemberCardServices.lostMemberCard(_id)
 
     return res.status(StatusCodes.OK).json(result)
   } catch (error) {

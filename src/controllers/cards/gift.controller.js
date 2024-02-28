@@ -4,8 +4,8 @@ import { GiftCardServices } from 'services/cards/gift.service'
 
 const registerGiftCard = async (req, res, next) => {
   try {
-    const { userId } = req.user
-    const result = await GiftCardServices.registerGiftCard(userId, req.body)
+    const { _id } = req.user
+    const result = await GiftCardServices.registerGiftCard(_id, req.body)
 
     return res.status(StatusCodes.OK).json(result)
   } catch (error) {
@@ -15,8 +15,8 @@ const registerGiftCard = async (req, res, next) => {
 
 const fetchAllByUserId = async (req, res, next) => {
   try {
-    const { userId } = req.user
-    const result = await GiftCardServices.fetchAllByUserId(userId)
+    const { _id } = req.user
+    const result = await GiftCardServices.fetchAllByUserId(_id)
 
     return res.status(StatusCodes.OK).json(result)
   } catch (error) {

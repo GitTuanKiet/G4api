@@ -25,7 +25,7 @@ const loginService = async (data) => {
     delete user.password
     // tạo token và trả về
     const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
-    const refreshToken = Jwt.sign({}, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
+    const refreshToken = Jwt.sign({ id:user._id }, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
     return { token, refreshToken }
   } catch (error) {
     throw error
@@ -136,10 +136,10 @@ const resetPasswordService = async (token) => {
   }
 }
 
-const refreshTokenService = async (data) => {
+const refreshTokenService = async (refreshToken) => {
   try {
     // verify token
-    const decoded = Jwt.verify(data.token, ENV.JWT_SECRET)
+    const decoded = Jwt.verify(refreshToken, ENV.JWT_SECRET)
 
     // tìm user theo id
     const user = await UserModels.findOneById(decoded.id)
@@ -147,7 +147,7 @@ const refreshTokenService = async (data) => {
     delete user.password
 
     // tạo token mới và trả về
-    const token = Jwt.sign({ user }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
 
     return { token }
   } catch (error) {

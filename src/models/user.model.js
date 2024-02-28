@@ -16,7 +16,7 @@ const schemaCreateUser = Joi.object({
   address: Joi.string().default(''),
   gender: Joi.string().valid('male', 'female', 'none').default('none'),
   avatar: Joi.string().pattern(UPLOAD_REGEX),
-  birthday: Joi.date().default(new Date()),
+  birthday: Joi.date().default(''),
 
   // _id của các collection khác
   memberCardId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).default(''),

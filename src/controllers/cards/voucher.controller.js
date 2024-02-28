@@ -3,8 +3,8 @@ import { VoucherServices } from 'services/cards/voucher.service'
 
 const registerVoucher = async (req, res, next) => {
   try {
-    const { userId } = req.user
-    const result = await VoucherServices.registerVoucher(userId, req.body)
+    const { _id } = req.user
+    const result = await VoucherServices.registerVoucher(_id, req.body)
 
     return res.status(StatusCodes.OK).json(result)
   } catch (error) {
@@ -14,8 +14,8 @@ const registerVoucher = async (req, res, next) => {
 
 const fetchAllByUserId = async (req, res, next) => {
   try {
-    const { userId } = req.user
-    const result = await VoucherServices.fetchAllByUserId(userId)
+    const { _id } = req.user
+    const result = await VoucherServices.fetchAllByUserId(_id)
 
     return res.status(StatusCodes.OK).json(result)
   } catch (error) {

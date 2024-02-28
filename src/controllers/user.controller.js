@@ -4,9 +4,11 @@ import { UserServices } from 'services/user.service'
 
 const updateProfile = async (req, res) => {
   try {
-    const { userId } = req.user
+    const { _id } = req.user
     const data = req.body
-    const user = await UserServices.updateProfile(userId, data)
+    const user = await UserServices.updateProfile(_id, data)
+    delete user.password
+
     return res.status(StatusCodes.OK).json(user)
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
@@ -15,10 +17,10 @@ const updateProfile = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    const { userId } = req.user
+    const { _id } = req.user
     const data = req.body
-    const user = await UserServices.changePassword(userId, data)
-    return res.status(StatusCodes.OK).json(user)
+    await UserServices.changePassword(_id, data)
+    return res.status(StatusCodes.OK).json({ message: 'Change password successfully' })
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
   }
