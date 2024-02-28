@@ -2,7 +2,7 @@
 import express from 'express'
 import exitHook from 'async-exit-hook'
 import compression from 'compression'
-import { connectMongo, disconnectMongo } from 'config/mongodb'
+import { connectMongo, disconnectMongo } from 'utils/database/mongodb'
 import { ENV } from 'config/environment'
 
 const { PORT, HOST, AUTHOR, NODE_ENV } = ENV
@@ -13,8 +13,8 @@ const START_SERVER = () => {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
-  app.use(require('config/helmet'))
-  app.use(require('config/cors'))
+  app.use(require('middlewares/helmet'))
+  app.use(require('middlewares/cors'))
   app.use(compression())
 
   app.use('/v1', require('routes/v1'))

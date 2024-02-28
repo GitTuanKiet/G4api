@@ -3,7 +3,7 @@ import { UserModels } from 'models/user.model'
 import bcrypt from 'bcrypt'
 import Jwt from 'jsonwebtoken'
 import { ENV } from 'config/environment'
-import { sendMail } from 'config/mailer'
+import { sendMail } from 'utils/mailer'
 
 const loginService = async (data) => {
   const { email, password } = data

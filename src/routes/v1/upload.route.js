@@ -1,5 +1,5 @@
 import express from 'express'
-import { upload } from 'middlewares/upload'
+import { upload } from 'utils/upload'
 import { UploadControllers } from 'controllers/upload.controller'
 import { UploadValidations } from 'validations/upload.validation'
 const router = express.Router()

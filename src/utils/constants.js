@@ -9,7 +9,7 @@ export const DOMAINS = [
 // regex cho objectId mongo
 export const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/
 export const OBJECT_ID_MESSAGE = { 'string.pattern.base': 'Invalid ObjectId' }
-
+export const UPLOAD_REGEX = /^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/
 // paypal
 const getApiUrl = (PATH) => path.join('https://api-m.sandbox.paypal.com', PATH)
 const getClientCredentials = () => {

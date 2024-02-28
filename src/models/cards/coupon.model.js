@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import Joi from 'joi'
-import { getMongo } from 'config/mongodb'
+import { getMongo } from 'utils/database/mongodb'
 import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
 import { fixObjectId } from 'utils/formatters'
 const CouponCollection = 'coupons'

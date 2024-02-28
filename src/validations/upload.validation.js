@@ -1,6 +1,7 @@
 import Joi from 'joi'
 import path from 'path'
 import { StatusCodes } from 'http-status-codes'
+import { UPLOAD_REGEX } from 'utils/constants'
 import ApiError from 'utils/ApiError'
 
 const uploadAvatar = async (req, res, next) => {
@@ -10,7 +11,7 @@ const uploadAvatar = async (req, res, next) => {
   }
   try {
     const schemaAvatar = Joi.object({
-      avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/)
+      avatar: Joi.string().pattern(UPLOAD_REGEX)
     })
     await schemaAvatar.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
     next()

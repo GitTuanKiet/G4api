@@ -1,5 +1,5 @@
 import { DOMAINS } from 'utils/constants'
-import { ENV } from './environment'
+import { ENV } from '../config/environment'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 import cor from 'cors'
