@@ -10,7 +10,7 @@ const updateProfile = async (req, res, next) => {
       email: Joi.string().email(),
       phone: Joi.string().regex(/^[0-9]{10}$/),
       address: Joi.string(),
-      birthday: Joi.date(),
+      birthday: Joi.string().isoDate(),
       gender: Joi.string().valid('male', 'female', 'none'),
       // avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/),
       PIN: Joi.number(),
