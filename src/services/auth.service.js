@@ -2,10 +2,16 @@
 import { UserModels } from 'models/user.model'
 import bcrypt from 'bcrypt'
 import Jwt from 'jsonwebtoken'
-import { ENV } from 'config/environment'
+import JWT_CONFIG from 'config/jwt.config'
+import MAIL_CONFIG from 'config/mail.config'
+import APP_CONFIG from 'config/app.config'
 import { sendMail } from 'utils/mailer'
 import ApiError from 'utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
+
+const { JWT_SECRET, EXPIRES_IN, REFRESH_EXPIRES_IN } = JWT_CONFIG
+const { MAIL_USER } = MAIL_CONFIG
+const { URL } = APP_CONFIG
 
 const loginService = async (data) => {
   const { email, password } = data
@@ -24,8 +30,8 @@ const loginService = async (data) => {
     // exclude password field
     delete user.password
     // tạo token và trả về
-    const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
-    const refreshToken = Jwt.sign({ id:user._id }, ENV.JWT_SECRET, { expiresIn: ENV.REFRESH_EXPIRES_IN })
+    const token = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
+    const refreshToken = Jwt.sign({ id:user._id }, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN })
     return { token, refreshToken }
   } catch (error) {
     throw error
@@ -50,14 +56,14 @@ const registerService = async (data) => {
     delete newlyUserSaved.password
 
     // tạo verifyEmailToken và gửi email
-    const verifyEmailToken = Jwt.sign({ id: newlyUserSaved._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const verifyEmailToken = Jwt.sign({ id: newlyUserSaved._id }, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
     // gửi email
     const mailOptions = {
-      from: ENV.MAIL_USER,
+      from: MAIL_USER,
       to: newlyUserSaved.email,
       subject: 'Verify email',
-      html: 'Click <a href="' + ENV.URL + '/auth/verify-email/' + verifyEmailToken + '">here</a> to verify email'
+      html: 'Click <a href="' + URL + '/auth/verify-email/' + verifyEmailToken + '">here</a> to verify email'
     }
 
     await sendMail(mailOptions)
@@ -69,7 +75,7 @@ const registerService = async (data) => {
 const verifyEmailService = async (token) => {
   try {
     // verify token
-    const decoded = Jwt.verify(token, ENV.JWT_SECRET)
+    const decoded = Jwt.verify(token, JWT_SECRET)
 
     // tìm user theo id
     const user = await UserModels.findOneById(decoded.id)
@@ -89,14 +95,14 @@ const forgotPasswordService = async (data) => {
     if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'Email not found')
 
     // tạo token và gửi email
-    const token = Jwt.sign({ id: user._id }, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const token = Jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
     // gửi email
     const mailOptions = {
-      from: ENV.MAIL_USER,
+      from: MAIL_USER,
       to: user.email,
       subject: 'Reset password',
-      html: 'Click <a href="' + ENV.URL + '/auth/reset-password/' + token + '">here</a> to reset password'
+      html: 'Click <a href="' + URL + '/auth/reset-password/' + token + '">here</a> to reset password'
     }
 
     await sendMail(mailOptions)
@@ -108,7 +114,7 @@ const forgotPasswordService = async (data) => {
 const resetPasswordService = async (token) => {
   try {
     // verify token
-    const decoded = Jwt.verify(token, ENV.JWT_SECRET)
+    const decoded = Jwt.verify(token, JWT_SECRET)
 
     // tìm user theo id
     const user = await UserModels.findOneById(decoded.id)
@@ -124,7 +130,7 @@ const resetPasswordService = async (token) => {
 
     // gửi email
     const mailOptions = {
-      from: ENV.MAIL_USER,
+      from: MAIL_USER,
       to: user.email,
       subject: 'Reset password',
       html: 'Reset password successfully with new password: ' + password
@@ -139,7 +145,7 @@ const resetPasswordService = async (token) => {
 const refreshTokenService = async (refreshToken) => {
   try {
     // verify token
-    const decoded = Jwt.verify(refreshToken, ENV.JWT_SECRET)
+    const decoded = Jwt.verify(refreshToken, JWT_SECRET)
 
     // tìm user theo id
     const user = await UserModels.findOneById(decoded.id)
@@ -147,7 +153,7 @@ const refreshTokenService = async (refreshToken) => {
     delete user.password
 
     // tạo token mới và trả về
-    const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const token = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
     return { token }
   } catch (error) {

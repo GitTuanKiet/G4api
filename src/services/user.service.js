@@ -6,7 +6,9 @@ import path from 'path'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 import Jwt from 'jsonwebtoken'
-import { ENV } from 'config/environment'
+import JWT_CONFIG from 'config/jwt.config'
+
+const { JWT_SECRET, EXPIRES_IN } = JWT_CONFIG
 
 // những field không được phép update
 const InvalidFields = ['_id', 'password', 'createdAt', 'updatedAt']
@@ -37,7 +39,7 @@ const updateProfile = async (userId, data) => {
 
     // tạo lại token với thông tin mới
     delete user.password
-    const token = Jwt.sign(user, ENV.JWT_SECRET, { expiresIn: ENV.EXPIRES_IN })
+    const token = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
     return token
   } catch (error) {

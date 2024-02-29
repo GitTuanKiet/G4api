@@ -1,5 +1,7 @@
-import { ENV } from 'config/environment'
+import PAYMENT_CONFIG from 'config/payment.config'
 import path from 'path'
+
+const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = PAYMENT_CONFIG
 
 export const DOMAINS = [
   'http://localhost:5173',
@@ -13,7 +15,7 @@ export const UPLOAD_REGEX = /^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|s
 // paypal
 const getApiUrl = (PATH) => path.join('https://api-m.sandbox.paypal.com', PATH)
 const getClientCredentials = () => {
-  return Buffer.from(`${ENV.PAYPAL_CLIENT_ID}:${ENV.PAYPAL_CLIENT_SECRET}`).toString('base64')
+  return Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64')
 }
 
 export { getApiUrl, getClientCredentials }

@@ -4,8 +4,9 @@ import { UserServices } from 'services/user.service'
 const uploadAvatar = async (req, res) => {
   try {
     const { _id } = req.user
-    const user = await UserServices.updateProfile(_id, req.body)
-    return res.status(StatusCodes.OK).json(user)
+    const token = await UserServices.updateProfile(_id, req.body)
+
+    return res.status(StatusCodes.OK).json({ token })
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
   }

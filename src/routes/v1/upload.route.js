@@ -4,11 +4,6 @@ import { UploadControllers } from 'controllers/upload.controller'
 import { UploadValidations } from 'validations/upload.validation'
 const router = express.Router()
 
-router.route('/avatar=:file')
-  .get((req, res) => {
-    res.sendFile(req.params.file, { root: 'uploads' })
-  })
-
 router.route('/avatar')
   .post(upload.single('avatar'), UploadValidations.uploadAvatar, UploadControllers.uploadAvatar)
 

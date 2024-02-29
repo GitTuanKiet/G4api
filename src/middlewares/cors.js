@@ -1,10 +1,11 @@
 import { DOMAINS } from 'utils/constants'
-import { ENV } from '../config/environment'
+import APP_CONFIG from 'config/app.config'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 import cor from 'cors'
 
-const isProduction = ENV.NODE_ENV === 'production'
+const { NODE_ENV } = APP_CONFIG
+const isProduction = NODE_ENV === 'production'
 
 const corsOptions = {
   origin: function (origin, callback) {

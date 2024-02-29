@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-catch */
 /* eslint-disable no-console */
 import { MongoClient, ServerApiVersion } from 'mongodb'
-import { ENV } from 'config/environment'
+import DB_CONFIG from 'config/db.config'
 
-const { MONGO_URL, MONGO_DB } = ENV
+const { MONGO_URL, MONGO_DB } = DB_CONFIG
 
 let dbInstance = null
 

@@ -25,7 +25,7 @@ const verifyEmailController = async (req, res, next) => {
   try {
     await AuthServices.verifyEmailService(req.params.token)
 
-    return res.status(StatusCodes.OK).json({ message: 'Verify email successfully' })
+    return res.render('verify-email')
   } catch (error) {
     next(error)
   }
