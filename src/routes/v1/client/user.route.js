@@ -11,5 +11,8 @@ router.route('/update-profile')
 router.route('/change-password')
   .put(UserValidations.changePassword, UserControllers.changePassword)
 
+router.route('/setup-pin')
+  .put(UserValidations.SetupPIN, UserControllers.SetupPIN)
+
 
 module.exports = router

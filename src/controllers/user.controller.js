@@ -25,8 +25,18 @@ const changePassword = async (req, res) => {
   }
 }
 
-
+const SetupPIN = async (req, res) => {
+  try {
+    const { _id } = req.user
+    const data = req.body
+    await UserServices.SetupPIN(_id, data)
+    return res.status(StatusCodes.OK).json({ message: 'Setup PIN successfully' })
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+  }
+}
 export const UserControllers = {
   updateProfile,
-  changePassword
+  changePassword,
+  SetupPIN
 }

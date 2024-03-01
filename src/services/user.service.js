@@ -68,7 +68,21 @@ const changePassword = async (userId, data) => {
   }
 }
 
+const SetupPIN = async (userId, data) => {
+  console.log('🚀 ~ SetupPIN ~ data:', data)
+  try {
+    // tìm user theo id
+    const user = await UserModels.findOneById(userId)
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+
+    return await UserModels.updateUser(userId, { PIN: data.newPIN, updatedAt: new Date() })
+  } catch (error) {
+    throw error
+  }
+}
+
 export const UserServices = {
   updateProfile,
-  changePassword
+  changePassword,
+  SetupPIN
 }

@@ -41,7 +41,20 @@ const changePassword = async (req, res, next) => {
   }
 }
 
+const SetupPIN = async (req, res, next) => {
+  try {
+    const schemaSetupPIN = Joi.object({
+      newPIN: Joi.number().min(6).required()
+    })
+    await schemaSetupPIN.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
+  } catch (error) {
+    next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message))
+  }
+}
+
 export const UserValidations = {
   updateProfile,
-  changePassword
+  changePassword,
+  SetupPIN
 }
