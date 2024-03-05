@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-import { MemberCardServices } from 'services/cards/member.service'
+import { MemberCardServices } from 'services/member.service'
 
 
 const registerMemberCard = async (req, res, next) => {

@@ -22,5 +22,5 @@ export const fixObjectId = (id) => {
 }
 
 export const VNDtoUSD = (vnd) => {
-  return Math.floor(vnd / 23000)
+  return (vnd).toLocaleString('en', { style: 'currency', currency: 'USD' })
 }

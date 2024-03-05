@@ -66,7 +66,7 @@ const registerService = async (data) => {
       html: 'Click <a href="' + URL + '/auth/verify-email/' + verifyEmailToken + '">here</a> to verify email'
     }
 
-    await sendMail(mailOptions)
+    sendMail(mailOptions)
   } catch (error) {
     throw error
   }
@@ -105,7 +105,7 @@ const forgotPasswordService = async (data) => {
       html: 'Click <a href="' + URL + '/auth/reset-password/' + token + '">here</a> to reset password'
     }
 
-    await sendMail(mailOptions)
+    sendMail(mailOptions)
   } catch (error) {
     throw error
   }
@@ -136,7 +136,7 @@ const resetPasswordService = async (token) => {
       html: 'Reset password successfully with new password: ' + password
     }
 
-    await sendMail(mailOptions)
+    sendMail(mailOptions)
   } catch (error) {
     throw error
   }

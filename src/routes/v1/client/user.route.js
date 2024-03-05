@@ -14,5 +14,7 @@ router.route('/change-password')
 router.route('/setup-pin')
   .put(UserValidations.SetupPIN, UserControllers.SetupPIN)
 
+router.route('/history')
+  .get(UserControllers.getHistory)
 
 module.exports = router

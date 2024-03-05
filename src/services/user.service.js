@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { UserModels } from 'models/user.model'
+import { OrderModels } from 'models/order.model'
 import bcrypt from 'bcrypt'
 import fs from 'fs'
 import path from 'path'
@@ -69,7 +70,6 @@ const changePassword = async (userId, data) => {
 }
 
 const SetupPIN = async (userId, data) => {
-  console.log('🚀 ~ SetupPIN ~ data:', data)
   try {
     // tìm user theo id
     const user = await UserModels.findOneById(userId)
@@ -81,8 +81,32 @@ const SetupPIN = async (userId, data) => {
   }
 }
 
+const getHistory = async (userId) => {
+  try {
+    const orderHistory = await OrderModels.findManyByUserId(userId)
+
+    // map theo type
+    const data = {
+      ticket: [],
+      voucher: [],
+      gift: [],
+      other: []
+    }
+    orderHistory.forEach(order => {
+      if (!order.type) order.type = 'other'
+      if (!data[order.type]) data[order.type] = [order]
+      else data[order.type] = [...data[order.type], order]
+    })
+
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+
 export const UserServices = {
   updateProfile,
   changePassword,
-  SetupPIN
+  SetupPIN,
+  getHistory
 }

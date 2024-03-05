@@ -7,11 +7,12 @@ const GiftCardCollection = 'gift cards'
 
 const schemaCreateGiftCard = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
+  orderId: Joi.string().required(),
   name: Joi.string().required(),
-  description: Joi.string().required(),
-  price: Joi.number().valid(100, 200, 300, 500, 1000).required(),
+  value: Joi.number().valid(100, 200, 300, 500, 1000).required(),
   status: Joi.string().valid('active', 'inactive').default('inactive'),
-  createdAt: Joi.date().default(new Date())
+  createdAt: Joi.date().default(new Date()),
+  expiredAt: Joi.date().default(new Date() + 6 * 30 * 24 * 60 * 60 * 1000)
 })
 
 /**
@@ -28,26 +29,13 @@ const validateGiftCard = async (data) => {
 }
 
 /**
- * function tìm giftCard theo id
- * @param {*} giftCardId
- * @returns {Promise<giftCard>}
- */
-const findOneById = async (giftCardId) => {
-  try {
-    return await getMongo().collection(GiftCardCollection).findOne({ _id: fixObjectId(giftCardId) })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
  * function fetch giftCard theo userId
  * @param {*} userId
  * @returns {Promise<array<giftCard>>}
  */
 const fetchAllByUserId = async (userId) => {
   try {
-    return await getMongo().collection(GiftCardCollection).find({ userId: fixObjectId(userId) }).toArray()
+    return await getMongo().collection(GiftCardCollection).find({ userId: fixObjectId(userId), status: 'active' }).toArray()
   } catch (error) {
     throw error
   }
@@ -69,8 +57,16 @@ const createGiftCard = async (data) => {
   }
 }
 
-export const GiftCardModels = {
-  findOneById,
+const updateStatusByOrderId = async (orderId, status) => {
+  try {
+    return await getMongo().collection(GiftCardCollection).updateOne({ orderId }, { $set: status })
+  } catch (error) {
+    throw error
+  }
+}
+
+export const GiftModels = {
   fetchAllByUserId,
-  createGiftCard
+  createGiftCard,
+  updateStatusByOrderId
 }

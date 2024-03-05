@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import { MemberCardModels } from 'models/cards/member.model'
+import { MemberCardModels } from 'models/member.model'
 import { UserModels } from 'models/user.model'
 import { fixObjectId } from 'utils/formatters'
 import ApiError from 'utils/ApiError'

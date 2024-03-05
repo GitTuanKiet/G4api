@@ -7,7 +7,6 @@ import { fixObjectId } from 'utils/formatters'
 const UserCollection = 'users'
 
 const schemaCreateUser = Joi.object({
-  // info user
   name: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
@@ -17,21 +16,11 @@ const schemaCreateUser = Joi.object({
   gender: Joi.string().valid('male', 'female', 'none').default('none'),
   avatar: Joi.string().pattern(UPLOAD_REGEX),
   birthday: Joi.string().isoDate().default(''),
-
-  // _id của các collection khác
   memberCardId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).default(''),
-  voucherIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
-  giftIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
-  couponIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
-  orderIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).default([]),
-
   role: Joi.string().valid('user', 'admin').default('user'),
   POINTS: Joi.number().default(0),
   PIN: Joi.number().default(0),
   isEmailVerified: Joi.boolean().default(false),
-  // emailVerificationToken: Joi.string().default(''),
-  // passwordResetToken: Joi.string().default(''),
-  // passwordResetExpires: Joi.date().default(null),
   createdAt: Joi.date().default(new Date()),
   updatedAt: Joi.date().default(new Date())
 })
@@ -97,46 +86,10 @@ const updateUser = async (userId, data) => {
   }
 }
 
-const pushGiftCardIds = async (userId, giftCardId) => {
-  try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { giftIds: giftCardId } }, { returnDocument: 'after' })
-  } catch (error) {
-    throw error
-  }
-}
-
-const pushVoucherIds = async (userId, voucherId) => {
-  try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { voucherIds: voucherId } }, { returnDocument: 'after' })
-  } catch (error) {
-    throw error
-  }
-}
-
-const pushCouponIds = async (userId, couponId) => {
-  try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { couponIds: couponId } }, { returnDocument: 'after' })
-  } catch (error) {
-    throw error
-  }
-}
-
-const pushOrderIds = async (userId, orderId) => {
-  try {
-    return await getMongo().collection(UserCollection).findOneAndUpdate({ _id: fixObjectId(userId) }, { $push: { orderIds: orderId } }, { returnDocument: 'after' })
-  } catch (error) {
-    throw error
-  }
-}
-
 // export các hàm để sử dụng ở controller
 export const UserModels = {
   findOneById,
   findOneByEmail,
   createUser,
-  updateUser,
-  pushGiftCardIds,
-  pushVoucherIds,
-  pushCouponIds,
-  pushOrderIds
+  updateUser
 }

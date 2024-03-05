@@ -41,7 +41,7 @@ const validate = async (data) => {
 
 // paypalOrderData - hàm này dùng để tạo dữ liệu đơn hàng cho paypal
 const paypalOrderData = ({ name, price, return_url, ...other }) => {
-  const priceUSD = VNDtoUSD(price)
+  // const priceUSD = VNDtoUSD(price)
   return {
     intent: 'CAPTURE',
     purchase_units: [
@@ -52,18 +52,18 @@ const paypalOrderData = ({ name, price, return_url, ...other }) => {
             description: JSON.stringify(other),
             unit_amount: {
               currency_code: 'USD',
-              value: priceUSD
+              value: price
             },
             quantity: '1'
           }
         ],
         amount: {
           currency_code: 'USD',
-          value: priceUSD,
+          value: price,
           breakdown: {
             item_total: {
               currency_code: 'USD',
-              value: priceUSD
+              value: price
             }
           }
         }
@@ -139,7 +139,7 @@ const captureOrder = async (orderId, accessToken) => {
         throw error
       })
   } catch (error) {
-    throw new ApiError(StatusCodes.BAD_REQUEST,'Failed to capture order: ' + error.message)
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to capture order: ' + error.message)
   }
 }
 

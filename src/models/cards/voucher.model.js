@@ -7,11 +7,13 @@ const VoucherCollection = 'vouchers'
 
 const schemaCreateVoucher = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
+  orderId: Joi.string().required(),
   name: Joi.string().required(),
-  description: Joi.string().required(),
-  price: Joi.number().valid(100, 200, 300, 500, 1000).required(),
+  code: Joi.string().required(),
+  discount: Joi.number().required(),
   status: Joi.string().valid('active', 'inactive').default('inactive'),
-  createdAt: Joi.date().default(new Date())
+  createdAt: Joi.date().default(new Date()),
+  expiredAt: Joi.date().default(new Date() + 6 * 30 * 24 * 60 * 60 * 1000)
 })
 
 /**
@@ -28,26 +30,13 @@ const validateVoucher = async (data) => {
 }
 
 /**
- * function tìm voucher theo id
- * @param {*} voucherId
- * @returns {Promise<voucher>}
- */
-const findOneById = async (voucherId) => {
-  try {
-    return await getMongo().collection(VoucherCollection).findOne({ _id: fixObjectId(voucherId) })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
  * function fetch voucher theo userId
  * @param {*} userId
  * @returns {Promise<array<voucher>>}
  */
 const fetchAllByUserId = async (userId) => {
   try {
-    return await getMongo().collection(VoucherCollection).find({ userId: fixObjectId(userId) }).toArray()
+    return await getMongo().collection(VoucherCollection).find({ userId: fixObjectId(userId), status: 'active' }).toArray()
   } catch (error) {
     throw error
   }
@@ -61,15 +50,23 @@ const fetchAllByUserId = async (userId) => {
 const createVoucher = async (data) => {
   try {
     const voucher = await validateVoucher(data)
-    const result = await getMongo().collection(VoucherCollection).insertOne(voucher)
-    return result.ops[0]
+    voucher.userId = fixObjectId(voucher.userId)
+    return await getMongo().collection(VoucherCollection).insertOne(voucher)
   } catch (error) {
     throw error
   }
 }
 
-export const VoucherModel = {
-  findOneById,
+const updateStatusByOrderId = async (orderId, status) => {
+  try {
+    return await getMongo().collection(VoucherCollection).updateOne({ orderId }, { $set: status })
+  } catch (error) {
+    throw error
+  }
+}
+
+export const VoucherModels = {
   fetchAllByUserId,
-  createVoucher
+  createVoucher,
+  updateStatusByOrderId
 }

@@ -12,7 +12,8 @@ const schemaCreateOrder = Joi.object({
   status: Joi.string().valid('CREATED', 'APPROVED', 'COMPLETED', 'VOIDED', 'REFUNDED').required(),
   name: Joi.string().required(),
   price: Joi.number().required(),
-  link: Joi.string().required(),
+  type: Joi.string().valid('ticket', 'voucher', 'gift').required(),
+  links: Joi.array().items(Joi.object({ href: Joi.string().required(), rel: Joi.string().required(), method: Joi.string().required() })).required(),
   createdAt: Joi.date().default(new Date())
 })
 
@@ -27,6 +28,21 @@ const validateOrder = async (data) => {
 const findOneById = async (id) => {
   try {
     return await getMongo().collection(OrderCollection).findOne({ _id: fixObjectId(id) })
+  } catch (error) {
+    throw error
+  }
+}
+const findOneByOrderId = async (orderId) => {
+  try {
+    return await getMongo().collection(OrderCollection).findOne({ orderId: orderId })
+  } catch (error) {
+    throw error
+  }
+}
+
+const findManyByUserId = async (userId) => {
+  try {
+    return await getMongo().collection(OrderCollection).find({ userId: fixObjectId(userId) }).toArray()
   } catch (error) {
     throw error
   }
@@ -55,6 +71,8 @@ const updateOrderByOrderId = async (orderId, data) => {
 
 export const OrderModels = {
   findOneById,
+  findOneByOrderId,
   createOrder,
-  updateOrderByOrderId
+  updateOrderByOrderId,
+  findManyByUserId
 }

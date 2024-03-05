@@ -7,6 +7,7 @@ const CouponCollection = 'coupons'
 
 const schemaCreateCoupon = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
+  orderId: Joi.string().required(),
   name: Joi.string().required(),
   description: Joi.string().required(),
   price: Joi.number().valid(100, 200, 300, 500, 1000).required(),
@@ -28,26 +29,13 @@ const validateCoupon = async (data) => {
 }
 
 /**
- * function tìm coupon theo id
- * @param {*} couponId
- * @returns {Promise<coupon>}
- */
-const findOneById = async (couponId) => {
-  try {
-    return await getMongo().collection(CouponCollection).findOne({ _id: fixObjectId(couponId) })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
  * function fetch coupon theo userId
  * @param {*} userId
  * @returns {Promise<array<coupon>>}
  */
 const fetchAllByUserId = async (userId) => {
   try {
-    return await getMongo().collection(CouponCollection).find({ userId: fixObjectId(userId) }).toArray()
+    return await getMongo().collection(CouponCollection).find({ userId: fixObjectId(userId), status: 'active' }).toArray()
   } catch (error) {
     throw error
   }
@@ -61,15 +49,23 @@ const fetchAllByUserId = async (userId) => {
 const createCoupon = async (data) => {
   try {
     const validatedData = await validateCoupon(data)
-    const inserted = await getMongo().collection(CouponCollection).insertOne(validatedData)
-    return inserted
+    validatedData.userId = fixObjectId(validatedData.userId)
+    return await getMongo().collection(CouponCollection).insertOne(validatedData)
+  } catch (error) {
+    throw error
+  }
+}
+
+const updateStatusByOrderId = async (orderId, status) => {
+  try {
+    return await getMongo().collection(CouponCollection).updateOne({ orderId }, { $set: status })
   } catch (error) {
     throw error
   }
 }
 
 export const CouponModels = {
-  findOneById,
   fetchAllByUserId,
-  createCoupon
+  createCoupon,
+  updateStatusByOrderId
 }
