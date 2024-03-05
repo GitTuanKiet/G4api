@@ -46,7 +46,7 @@ const fetchAllByUserId = async (userId) => {
  * @param {*} data
  * @returns {Promise<giftCard>}
  */
-const createGiftCard = async (data) => {
+const createGift = async (data) => {
   try {
     const validatedData = await validateGiftCard(data)
     validatedData.userId = fixObjectId(validatedData.userId)
@@ -67,6 +67,6 @@ const updateStatusByOrderId = async (orderId, status) => {
 
 export const GiftModels = {
   fetchAllByUserId,
-  createGiftCard,
+  createGift,
   updateStatusByOrderId
 }
