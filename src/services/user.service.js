@@ -12,7 +12,7 @@ import JWT_CONFIG from 'config/jwt.config'
 const { JWT_SECRET, EXPIRES_IN } = JWT_CONFIG
 
 // những field không được phép update
-const InvalidFields = ['_id', 'password', 'createdAt', 'updatedAt']
+const InvalidFields = ['_id', 'password', 'role', 'createdAt', 'updatedAt']
 
 const updateProfile = async (userId, data) => {
   // xóa những field không được phép update
@@ -28,7 +28,7 @@ const updateProfile = async (userId, data) => {
 
     // nếu thay avatar thì xóa avatar cũ trong uploads
     if (data.avatar) {
-      if (check.avatar) {
+      if (check.avatar && check.avatar !== data.avatar) {
         const filePath = path.join('./', check.avatar)
         await fs.promises.unlink(filePath)
       }

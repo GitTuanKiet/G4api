@@ -10,7 +10,7 @@ const schemaCreateGiftCard = Joi.object({
   orderId: Joi.string().required(),
   name: Joi.string().required(),
   value: Joi.number().valid(100, 200, 300, 500, 1000).required(),
-  status: Joi.string().valid('active', 'inactive').default('inactive'),
+  status: Joi.string().valid('active', 'processing', 'used', 'inactive').default('inactive'),
   createdAt: Joi.date().default(new Date()),
   expiredAt: Joi.date().default(new Date() + 6 * 30 * 24 * 60 * 60 * 1000)
 })
@@ -58,6 +58,7 @@ const createGift = async (data) => {
 }
 
 const updateStatusByOrderId = async (orderId, status) => {
+  if (!orderId) return
   try {
     return await getMongo().collection(GiftCardCollection).updateOne({ orderId }, { $set: status })
   } catch (error) {

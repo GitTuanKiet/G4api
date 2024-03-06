@@ -5,7 +5,7 @@ import { VoucherModels } from 'models/cards/voucher.model'
 import { CouponModels } from 'models/cards/coupon.model'
 import { TicketModels } from 'models/cards/ticket.model'
 
-import { fixObjectId } from 'utils/formatters'
+import { ShowtimeServices } from 'services/showtime.service'
 import ApiError from 'utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 
@@ -26,7 +26,9 @@ const fetchAllByUserId = async (userId) => {
 
 const createCard = async (userId, type, data) => {
   try {
+    const price = Number(data.price)
     delete data.type
+    delete data.price
     delete data.return_url
     let cardData = {
       ...data,
@@ -35,25 +37,25 @@ const createCard = async (userId, type, data) => {
 
     switch (type) {
     case 'gift':
-      cardData = {
-        ...cardData,
-        value: Number(cardData.price)
-      }
-      delete cardData.price
-      return await GiftModels.createGift(cardData)
+      cardData.value = price
+      await GiftModels.createGift(cardData)
+      return
     case 'voucher':
-      cardData = {
-        ...cardData,
-        discount: Number(cardData.price)
-      }
-      delete cardData.price
-      return await VoucherModels.createVoucher(cardData)
+      cardData.discount = price
+      await VoucherModels.createVoucher(cardData)
+      return
     case 'coupon':
       // sẽ bổ sung sau
-      return await CouponModels.createCoupon(cardData)
+      await CouponModels.createCoupon(cardData)
+      return
     case 'ticket':
-      // xử lí voucher và gift
-      return await TicketModels.createTicket(cardData)
+      cardData.total = price
+      await Promise.all([
+        VoucherModels.updateStatusByOrderId(data?.voucherOrderId, { status: 'processing' }),
+        GiftModels.updateStatusByOrderId(data?.giftOrderId, { status: 'processing' }),
+        TicketModels.createTicket(cardData)
+      ])
+      return
     default:
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid card type')
     }
@@ -61,16 +63,33 @@ const createCard = async (userId, type, data) => {
     throw error
   }
 }
-
-const updateStatusByOrderId = async (orderId, status) => {
+/**
+ *
+ * @param {*} orderId
+ * @param {object} data - status, expiredAt
+ * @returns
+ */
+const updateStatusActive = async (orderId, data) => {
   try {
+    // update status of card
     await Promise.all([
-      GiftModels.updateStatusByOrderId(orderId, status),
-      VoucherModels.updateStatusByOrderId(orderId, status),
-      CouponModels.updateStatusByOrderId(orderId, status),
-      TicketModels.updateStatusByOrderId(orderId, status)
+      GiftModels.updateStatusByOrderId(orderId, data),
+      VoucherModels.updateStatusByOrderId(orderId, data),
+      CouponModels.updateStatusByOrderId(orderId, data),
+      TicketModels.updateStatusByOrderId(orderId, data)
     ])
 
+    // if card is ticket, push booked chairs and update status of voucher and gift used
+    const ticket = await TicketModels.findByOrderId(orderId)
+    if (ticket) {
+      await Promise.all([
+        ShowtimeServices.pushBookedChairs(ticket.showtimeId, ticket.chairs),
+        VoucherModels.updateStatusByOrderId(ticket.voucherOrderId, { status: 'used' }),
+        GiftModels.updateStatusByOrderId(ticket.giftOrderId, { status: 'used' })
+      ])
+    }
+
+    return
   } catch (error) {
     throw error
   }
@@ -79,5 +98,5 @@ const updateStatusByOrderId = async (orderId, status) => {
 export const CardServices = {
   fetchAllByUserId,
   createCard,
-  updateStatusByOrderId
+  updateStatusActive
 }

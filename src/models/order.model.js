@@ -25,13 +25,6 @@ const validateOrder = async (data) => {
   }
 }
 
-const findOneById = async (id) => {
-  try {
-    return await getMongo().collection(OrderCollection).findOne({ _id: fixObjectId(id) })
-  } catch (error) {
-    throw error
-  }
-}
 const findOneByOrderId = async (orderId) => {
   try {
     return await getMongo().collection(OrderCollection).findOne({ orderId: orderId })
@@ -70,7 +63,6 @@ const updateOrderByOrderId = async (orderId, data) => {
 }
 
 export const OrderModels = {
-  findOneById,
   findOneByOrderId,
   createOrder,
   updateOrderByOrderId,

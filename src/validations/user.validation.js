@@ -1,5 +1,7 @@
 import Joi from 'joi'
-import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
+import path from 'path'
+
+import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE, UPLOAD_REGEX } from 'utils/constants'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 
@@ -25,6 +27,22 @@ const updateProfile = async (req, res, next) => {
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message))
+  }
+}
+
+const uploadAvatar = async (req, res, next) => {
+  // sửa field avatar thành đường dẫn file
+  if (req.file) {
+    req.body.avatar = path.join('/', req.file.path)
+  }
+  try {
+    const schemaAvatar = Joi.object({
+      avatar: Joi.string().pattern(UPLOAD_REGEX)
+    })
+    await schemaAvatar.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
+  } catch (error) {
+    next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )
   }
 }
 
@@ -55,6 +73,7 @@ const SetupPIN = async (req, res, next) => {
 
 export const UserValidations = {
   updateProfile,
+  uploadAvatar,
   changePassword,
   SetupPIN
 }

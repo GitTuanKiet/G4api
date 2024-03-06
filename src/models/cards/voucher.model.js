@@ -11,7 +11,7 @@ const schemaCreateVoucher = Joi.object({
   name: Joi.string().required(),
   code: Joi.string().required(),
   discount: Joi.number().required(),
-  status: Joi.string().valid('active', 'inactive').default('inactive'),
+  status: Joi.string().valid('active', 'processing', 'used', 'inactive').default('inactive'),
   createdAt: Joi.date().default(new Date()),
   expiredAt: Joi.date().default(new Date() + 6 * 30 * 24 * 60 * 60 * 1000)
 })
@@ -58,6 +58,7 @@ const createVoucher = async (data) => {
 }
 
 const updateStatusByOrderId = async (orderId, status) => {
+  if (!orderId) return
   try {
     return await getMongo().collection(VoucherCollection).updateOne({ orderId }, { $set: status })
   } catch (error) {

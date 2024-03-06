@@ -3,19 +3,19 @@ import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
 import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
 import { fixObjectId } from 'utils/formatters'
+
 const TicketCollection = 'tickets'
 
 const schemaCreateTicket = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
-  orderId: Joi.string().required(),
-  cinemaId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
   showtimeId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
-  voucherId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
-  giftId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
-  chairIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)).required(),
+  orderId: Joi.string().required(),
+  voucherOrderId: Joi.string().required(),
+  giftOrderId: Joi.string().required(),
+  chairs: Joi.array().items(Joi.string()).required(),
   description: Joi.string().required(),
-  price: Joi.number().required(),
-  status: Joi.string().valid('used', 'unused', 'inactive').default('inactive'),
+  status: Joi.string().valid('used', 'processing', 'active', 'inactive').default('inactive'),
+  total: Joi.number().required(),
   createdAt: Joi.date().default(new Date())
 })
 
@@ -33,13 +33,26 @@ const validateTicket = async (data) => {
 }
 
 /**
+ * function find by orderId
+ * @param {*} orderId
+ * @returns {Promise<ticket>}
+ */
+const findByOrderId = async (orderId) => {
+  try {
+    return await getMongo().collection(TicketCollection).findOne({ orderId })
+  } catch (error) {
+    throw error
+  }
+}
+
+/**
  * function fetch ticket theo userId
  * @param {*} userId
  * @returns {Promise<array<ticket>>}
  */
 const fetchAllByUserId = async (userId) => {
   try {
-    return await getMongo().collection(TicketCollection).find({ userId: fixObjectId(userId), status: { $in: ['used', 'unused'] } }).toArray()
+    return await getMongo().collection(TicketCollection).find({ userId: fixObjectId(userId), status: { $in: ['used', 'active'] } }).toArray()
   } catch (error) {
     throw error
   }
@@ -54,11 +67,7 @@ const createTicket = async (data) => {
   try {
     const ticket = validateTicket(data)
     ticket.userId = fixObjectId(ticket.userId)
-    ticket.cinemaId = fixObjectId(ticket.cinemaId)
     ticket.showtimeId = fixObjectId(ticket.showtimeId)
-    ticket.voucherId = fixObjectId(ticket.voucherId)
-    ticket.giftId = fixObjectId(ticket.giftId)
-    ticket.chairIds = ticket.chairIds.map(fixObjectId)
     return await getMongo().collection(TicketCollection).insertOne(ticket)
   } catch (error) {
     throw error
@@ -66,6 +75,8 @@ const createTicket = async (data) => {
 }
 
 const updateStatusByOrderId = async (orderId, status) => {
+  if (!orderId) return
+  if (status.expiredAt) delete status.expiredAt
   try {
     return await getMongo().collection(TicketCollection).updateOne({ orderId }, { $set: status })
   } catch (error) {
@@ -74,6 +85,7 @@ const updateStatusByOrderId = async (orderId, status) => {
 }
 
 export const TicketModels = {
+  findByOrderId,
   validateTicket,
   fetchAllByUserId,
   createTicket,

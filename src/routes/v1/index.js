@@ -10,16 +10,21 @@ router.get('/uploads/:file', (req, res) => {
     res.status(404).send('File not found')
   }
 })
-
+router.use('/fetch', require('./fetch.route'))
 router.use('/auth', require('./auth.route'))
 
 // verify token middleware
 router.use(require('middlewares/verifyJWT'))
 
-// routes
-router.use('/uploads', require('./upload.route'))
+// client routes
 router.use('/user', require('./client/user.route'))
-router.use('/card', require('./client/card.route'))
 router.use('/payment', require('./client/payment.route'))
+
+// check role middleware
+router.use(require('middlewares/checkRole'))
+
+// admin routes
+router.use('/admin/movie', require('./admin/movie.route'))
+router.use('/admin/cinema', require('./admin/cinema.route'))
 
 module.exports = router

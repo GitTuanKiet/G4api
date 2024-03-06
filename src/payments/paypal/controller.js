@@ -79,9 +79,9 @@ const checkOutController = async (req, res, next) => {
         return res.status(StatusCodes.BAD_REQUEST).json(data.error)
       }
 
-      // Cập nhật trạng thái đơn hàng trong database
+      // Cập nhật trạng thái trong database
       await Promise.all([
-        CardServices.updateStatusByOrderId(id, { status: 'active', expiredAt: new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000) }),
+        CardServices.updateStatusActive(id, { status: 'active', expiredAt: new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000) }),
         OrderModels.updateOrderByOrderId(id, { status: data.status })
       ])
 
