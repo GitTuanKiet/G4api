@@ -95,9 +95,15 @@ const fetchAll = async () => {
 
     const fetch = await ShowtimeModels.fetchAll()
 
-    for (let i = 0; i < fetch.length; i++) {
-      fetch[i].dateId = i
-    }
+    // thêm dateId cho từng showtime dựa theo day
+    // nếu day là ngày hiện tại thì dateId = 0
+    // những ngày sau thì dateId = 1, 2, 3, ...
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    fetch.forEach((showtime) => {
+      const date = new Date(showtime.day)
+      showtime.dateId = Math.floor((date - today) / (24 * 60 * 60 * 1000))
+    })
 
     showtimes = cloneDeep(fetch)
     return showtimes
