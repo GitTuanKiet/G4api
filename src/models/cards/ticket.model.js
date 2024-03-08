@@ -9,9 +9,10 @@ const TicketCollection = 'tickets'
 const schemaCreateTicket = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
   showtimeId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
+  name: Joi.string().required(),
   orderId: Joi.string().required(),
-  voucherOrderId: Joi.string().required(),
-  giftOrderId: Joi.string().required(),
+  voucherOrderId: Joi.string(),
+  giftOrderId: Joi.string(),
   chairs: Joi.array().items(Joi.string()).required(),
   description: Joi.string().required(),
   status: Joi.string().valid('used', 'processing', 'active', 'inactive').default('inactive'),

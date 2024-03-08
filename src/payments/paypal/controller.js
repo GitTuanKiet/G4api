@@ -32,6 +32,20 @@ const createOrderController = async (req, res, next) => {
       return res.status(StatusCodes.BAD_REQUEST).json(data.error)
     }
 
+    const { id, status, links } = data
+
+    if (status !== 'CREATED') {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Order not created' })
+    }
+
+    if (!links) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'No links' })
+    }
+
+    if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'No order id' })
+    }
+
     await Promise.all([
     // Lưu đơn hàng vào database
       OrderModels.createOrder({

@@ -26,6 +26,7 @@ const fetchAllByUserId = async (userId) => {
 
 const createCard = async (userId, type, data) => {
   try {
+    // get price and delete from data
     const price = Number(data.price)
     delete data.type
     delete data.price
@@ -35,6 +36,7 @@ const createCard = async (userId, type, data) => {
       userId: userId
     }
 
+    // switch case to create card
     switch (type) {
     case 'gift':
       cardData.value = price

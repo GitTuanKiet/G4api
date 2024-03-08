@@ -8,14 +8,21 @@ import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 
 let movies = []
+const date = new Date()
 
 const fetchAll = async () => {
   try {
+    // fetch lại dữ liệu sau mỗi 24h
+    const now = new Date()
+    if (now - date > 1000 * 60 * 60 * 24) {
+      movies.length = 0
+    }
+
     if (movies.length) {
       return movies
     }
+
     const fetch = await MovieModels.fetchAll()
-    const now = new Date()
     const fixedMovies = fetch.map((movie) => {
       if (movie.releaseDate <= now && movie.endDate > now) {
         movie.status = 'now showing'
@@ -29,6 +36,7 @@ const fetchAll = async () => {
       return movie
     })
     movies = cloneDeep(fixedMovies)
+
     return movies
   } catch (error) {
     throw error

@@ -129,10 +129,10 @@ const resetPasswordService = async (token) => {
     // hash password
     const salt = bcrypt.genSaltSync(10)
     let password = Math.random().toString(36).substring(7)
-    password = bcrypt.hashSync(password, salt)
+    const newPassword = bcrypt.hashSync(password, salt)
 
     // cập nhật password
-    await UserModels.updateUser(decoded.id, { password: password })
+    await UserModels.updateUser(decoded.id, { password: newPassword })
 
     // gửi email
     const mailOptions = {

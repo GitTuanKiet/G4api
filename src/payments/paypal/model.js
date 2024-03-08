@@ -42,6 +42,9 @@ const validate = async (data) => {
 // paypalOrderData - hàm này dùng để tạo dữ liệu đơn hàng cho paypal
 const paypalOrderData = ({ name, price, return_url, ...other }) => {
   // const priceUSD = VNDtoUSD(price)
+  const fixedPrice = price.toFixed(2)
+  if (other?.description) other.description = JSON.stringify(other.description)
+  else other.description = JSON.stringify(other)
   return {
     intent: 'CAPTURE',
     purchase_units: [
@@ -49,21 +52,21 @@ const paypalOrderData = ({ name, price, return_url, ...other }) => {
         items: [
           {
             name,
-            description: JSON.stringify(other),
+            description: JSON.stringify(other.description),
             unit_amount: {
               currency_code: 'USD',
-              value: price
+              value: fixedPrice
             },
             quantity: '1'
           }
         ],
         amount: {
           currency_code: 'USD',
-          value: price,
+          value: fixedPrice,
           breakdown: {
             item_total: {
               currency_code: 'USD',
-              value: price
+              value: fixedPrice
             }
           }
         }
