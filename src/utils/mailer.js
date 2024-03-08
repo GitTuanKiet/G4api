@@ -2,6 +2,12 @@ import nodemailer from 'nodemailer'
 import MAIL_CONFIG from 'config/mail.config'
 import { getDOMAIN } from './constants'
 const { MAIL_USER, MAIL_PASS } = MAIL_CONFIG
+import path from 'path'
+
+const getURL = (url) => {
+  const domain = getDOMAIN()
+  return path.join(domain, url)
+}
 
 const mailer = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -48,14 +54,13 @@ export const sendMailOptions = (user, token, type) => {
 }
 
 const mailOptionsVerifyEmail = (user, token) => {
-  const domain = getDOMAIN()
   const mailOptions = {
     from: MAIL_USER,
     to: user.email,
     subject: 'Verify your email address',
     html: `Dear ${user.name}, <br/><br/>
     Thank you for signing up with our service! To complete the registration process, please click the following link to verify your email address:<br/><br/>
-    <a href="http://${domain}/auth/verify-email/${token}">Verify Email Address</a><br/><br/>
+    <a href="${getURL(`/auth/verify-email/${token}`)}">Verify Email</a><br/><br/>
     If you did not sign up for our service, please disregard this email.<br/><br/>
     Best regards,<br/>
     The CGV cinema`
@@ -64,14 +69,13 @@ const mailOptionsVerifyEmail = (user, token) => {
 }
 
 const mailOptionsForgotPassword = (user, token) => {
-  const domain = getDOMAIN()
   const mailOptions = {
     from: MAIL_USER,
     to: user.email,
     subject: 'Reset your password',
     html: `Dear ${user.name}, <br/><br/>
     We received a request to reset your password. If you did not make this request, simply ignore this email. Otherwise, you can reset your password using this link:<br/><br/>
-    <a href="http://${domain}/auth/reset-password/${token}">Reset Password</a><br/><br/>
+    <a href="${getURL(`/auth/reset-password/${token}`)}">Reset Password</a><br/><br/>
     This link will expire in 1 hour.<br/><br/>
     Best regards,<br/>
     The CGV cinema`
