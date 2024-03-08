@@ -2,11 +2,11 @@ import nodemailer from 'nodemailer'
 import MAIL_CONFIG from 'config/mail.config'
 import { getDOMAIN } from './constants'
 const { MAIL_USER, MAIL_PASS } = MAIL_CONFIG
-import path from 'path'
+import url from 'url'
 
-const getURL = (url) => {
+const getURL = (path) => {
   const domain = getDOMAIN()
-  return path.join(domain, url)
+  return url.resolve(domain, path)
 }
 
 const mailer = nodemailer.createTransport({
