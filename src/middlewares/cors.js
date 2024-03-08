@@ -1,20 +1,17 @@
-import { DOMAINS } from 'utils/constants'
-import APP_CONFIG from 'config/app.config'
+import { DOMAINS, isProduction } from 'utils/constants'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 import cor from 'cors'
 
-const { NODE_ENV } = APP_CONFIG
-const isProduction = NODE_ENV === 'production'
-
 const corsOptions = {
   origin: function (origin, callback) {
 
-    if (!isProduction) {
+    const isProd = isProduction()
+    if (!isProd) {
       return callback(null, true)
     }
 
-    if (DOMAINS.includes(origin) && isProduction) {
+    if (DOMAINS.includes(origin) && isProd) {
       return callback(null, true)
     }
 

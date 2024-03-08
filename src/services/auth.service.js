@@ -3,15 +3,11 @@ import { UserModels } from 'models/user.model'
 import bcrypt from 'bcrypt'
 import Jwt from 'jsonwebtoken'
 import JWT_CONFIG from 'config/jwt.config'
-import MAIL_CONFIG from 'config/mail.config'
-import APP_CONFIG from 'config/app.config'
-import { sendMail } from 'utils/mailer'
+import { sendMailOptions } from 'utils/mailer'
 import ApiError from 'utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 
 const { JWT_SECRET, EXPIRES_IN, REFRESH_EXPIRES_IN } = JWT_CONFIG
-const { MAIL_USER } = MAIL_CONFIG
-const { URL } = APP_CONFIG
 
 const loginService = async (data) => {
   const { email, password } = data
@@ -59,20 +55,7 @@ const registerService = async (data) => {
     const verifyEmailToken = Jwt.sign({ id: newlyUserSaved._id }, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
     // gửi email
-    const currentDomain = 'localhost:5173' // in production mode should be modified to root domain
-    const mailOptions = {
-      from: MAIL_USER,
-      to: newlyUserSaved.email,
-      subject: 'Verify your email address',
-      html: `Dear ${newlyUserSaved.name}, <br/><br/>
-    Thank you for signing up with our service! To complete the registration process, please click the following link to verify your email address:<br/><br/>
-    <a href="http://${currentDomain}/auth/verify-email/${verifyEmailToken}">Verify Email Address</a><br/><br/>
-    If you did not sign up for our service, please disregard this email.<br/><br/>
-    Best regards,<br/>
-    The CGV cinema`
-    }
-
-    sendMail(mailOptions)
+    sendMailOptions(newlyUserSaved, verifyEmailToken, 'verifyEmail')
   } catch (error) {
     throw error
   }
@@ -104,14 +87,7 @@ const forgotPasswordService = async (data) => {
     const token = Jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
     // gửi email
-    const mailOptions = {
-      from: MAIL_USER,
-      to: user.email,
-      subject: 'Reset password',
-      html: 'Click <a href="' + URL + '/auth/reset-password/' + token + '">here</a> to reset password'
-    }
-
-    sendMail(mailOptions)
+    sendMailOptions(user, token, 'forgotPassword')
   } catch (error) {
     throw error
   }
@@ -135,14 +111,7 @@ const resetPasswordService = async (token) => {
     await UserModels.updateUser(decoded.id, { password: newPassword })
 
     // gửi email
-    const mailOptions = {
-      from: MAIL_USER,
-      to: user.email,
-      subject: 'Reset password',
-      html: 'Reset password successfully with new password: ' + password
-    }
-
-    sendMail(mailOptions)
+    sendMailOptions(user, password, 'resetPassword')
   } catch (error) {
     throw error
   }

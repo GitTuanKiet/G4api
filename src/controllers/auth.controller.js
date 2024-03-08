@@ -15,9 +15,7 @@ const registerController = async (req, res, next) => {
   try {
     await AuthServices.registerService(req.body)
 
-    return res
-      .status(StatusCodes.CREATED)
-      .json({ message: 'Register successfully. Please check your email to verify account' })
+    return res.status(StatusCodes.CREATED).json({ message: 'Register successfully. Please check your email to verify account' })
   } catch (error) {
     next(error)
   }
@@ -26,7 +24,7 @@ const registerController = async (req, res, next) => {
 const verifyEmailController = async (req, res, next) => {
   try {
     await AuthServices.verifyEmailService(req.params.token)
-    // return res.render('verify-email')
+
     return res.status(200).json({ message: 'Verified email successfully' })
   } catch (error) {
     next(error)

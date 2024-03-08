@@ -3,10 +3,8 @@ import model from './model'
 import { OrderModels } from 'models/order.model'
 import { CardServices } from 'services/card.service'
 
-import MAIL_CONFIG from 'config/mail.config'
-import { sendMail } from 'utils/mailer'
+import { sendMailOptions } from 'utils/mailer'
 
-const { MAIL_USER } = MAIL_CONFIG
 
 let accessToken = ''
 
@@ -131,15 +129,7 @@ const cancelController = async (req, res, next) => {
       }
 
       // Gửi links về email người dùng
-      const mailOptions = {
-        from: MAIL_USER,
-        to: req.user.email,
-        subject: 'Paypal payment',
-        html: `<p>Click <a href="${data.links[1].href}">here</a> to pay again</p>`
-      }
-
-      // Gửi email
-      sendMail(mailOptions)
+      sendMailOptions(req.user, data, 'paypalPayment')
       return res.status(StatusCodes.OK).json({ message: 'Check your email to pay again' })
     }
 

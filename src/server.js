@@ -15,7 +15,6 @@ const START_SERVER = () => {
   app.use(compression())
 
   app.use(require('middlewares/cors'))
-  app.use(express.static('public'))
 
   app.use('/v1', require('routes/v1'))
 
