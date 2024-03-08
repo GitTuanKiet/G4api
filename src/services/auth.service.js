@@ -31,7 +31,7 @@ const loginService = async (data) => {
     delete user.password
     // tạo token và trả về
     const token = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
-    const refreshToken = Jwt.sign({ id:user._id }, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN })
+    const refreshToken = Jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN })
     return { token, refreshToken }
   } catch (error) {
     throw error
@@ -59,11 +59,17 @@ const registerService = async (data) => {
     const verifyEmailToken = Jwt.sign({ id: newlyUserSaved._id }, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
     // gửi email
+    const currentDomain = 'localhost:5173' // in production mode should be modified to root domain
     const mailOptions = {
       from: MAIL_USER,
       to: newlyUserSaved.email,
-      subject: 'Verify email',
-      html: 'Click <a href="' + URL + '/auth/verify-email/' + verifyEmailToken + '">here</a> to verify email'
+      subject: 'Verify your email address',
+      html: `Dear ${newlyUserSaved.name}, <br/><br/>
+    Thank you for signing up with our service! To complete the registration process, please click the following link to verify your email address:<br/><br/>
+    <a href="http://${currentDomain}/auth/verify-email/${verifyEmailToken}">Verify Email Address</a><br/><br/>
+    If you did not sign up for our service, please disregard this email.<br/><br/>
+    Best regards,<br/>
+    The CGV cinema`
     }
 
     sendMail(mailOptions)
