@@ -1,10 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
-import APP_CONFIG from 'config/app.config'
-
+import { isProduction } from 'utils/constants'
 // error handler middleware để bắt lỗi, sửa lại response trả về cho client
 
-const { NODE_ENV } = APP_CONFIG
-const isProduction = NODE_ENV === 'production'
+const isProd = isProduction()
 
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
@@ -19,7 +17,7 @@ const errorHandler = (err, req, res, next) => {
     stack: err.stack
   }
 
-  if (isProduction) delete responseError.stack
+  if (isProd) delete responseError.stack
 
   res.status(err.statusCode).json(responseError)
 }

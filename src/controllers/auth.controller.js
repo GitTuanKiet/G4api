@@ -45,7 +45,7 @@ const resetPasswordController = async (req, res, next) => {
   try {
     await AuthServices.resetPasswordService(req.params.token)
 
-    return res.status(StatusCodes.OK).json({ message: 'Reset password successfully' })
+    return res.status(StatusCodes.OK).json({ message: 'Reset password successfully. Please check your email to get new password' })
   } catch (error) {
     next(error)
   }
@@ -53,9 +53,9 @@ const resetPasswordController = async (req, res, next) => {
 
 const refreshTokenController = async (req, res, next) => {
   try {
-    const token = await AuthServices.refreshTokenService(req.body.refreshToken)
+    const accessToken = await AuthServices.refreshTokenService(req.params.token)
 
-    return res.status(StatusCodes.OK).json(token)
+    return res.status(StatusCodes.OK).json(accessToken)
   } catch (error) {
     next(error)
   }

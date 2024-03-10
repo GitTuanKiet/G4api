@@ -3,10 +3,11 @@ import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 import cor from 'cors'
 
+const isProd = isProduction()
+
 const corsOptions = {
   origin: function (origin, callback) {
 
-    const isProd = isProduction()
     if (!isProd) {
       return callback(null, true)
     }

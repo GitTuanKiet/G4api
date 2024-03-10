@@ -50,6 +50,19 @@ const fetchAll = async () => {
 }
 
 /**
+ * function find Showtime by id
+ * @param {*} ShowtimeId
+ * @returns {Promise<Showtime>}
+ */
+const findOneById = async (ShowtimeId) => {
+  try {
+    return await getMongo().collection(ShowtimeCollection).findOne({ _id: fixObjectId(ShowtimeId) })
+  } catch (error) {
+    throw error
+  }
+}
+
+/**
  * function tạo mới Showtime
  * @param {*} data
  * @returns {Promise<Showtime>}
@@ -118,6 +131,7 @@ const pushBookedChairs = async (ShowtimeId, chairs) => {
 
 export const ShowtimeModels = {
   fetchAll,
+  findOneById,
   createShowtime,
   updateShowtime,
   deleteShowtime,

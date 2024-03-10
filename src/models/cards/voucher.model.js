@@ -9,6 +9,7 @@ const schemaCreateVoucher = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
   orderId: Joi.string().required(),
   name: Joi.string().required(),
+  description: Joi.string(),
   code: Joi.string().required(),
   discount: Joi.number().required(),
   status: Joi.string().valid('active', 'processing', 'used', 'inactive').default('inactive'),

@@ -6,9 +6,9 @@ const updateProfile = async (req, res) => {
   try {
     const { _id } = req.user
     const data = req.body
-    const token = await UserServices.updateProfile(_id, data)
+    const accessToken = await UserServices.updateProfile(_id, data)
 
-    return res.status(StatusCodes.OK).json({ token })
+    return res.status(StatusCodes.OK).json({ accessToken })
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
   }
@@ -17,9 +17,9 @@ const updateProfile = async (req, res) => {
 const uploadAvatar = async (req, res) => {
   try {
     const { _id } = req.user
-    const token = await UserServices.updateProfile(_id, req.body)
+    const accessToken = await UserServices.updateProfile(_id, req.body)
 
-    return res.status(StatusCodes.OK).json({ token })
+    return res.status(StatusCodes.OK).json({ accessToken })
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
   }

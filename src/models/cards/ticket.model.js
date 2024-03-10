@@ -66,7 +66,7 @@ const fetchAllByUserId = async (userId) => {
  */
 const createTicket = async (data) => {
   try {
-    const ticket = validateTicket(data)
+    const ticket = await validateTicket(data)
     ticket.userId = fixObjectId(ticket.userId)
     ticket.showtimeId = fixObjectId(ticket.showtimeId)
     return await getMongo().collection(TicketCollection).insertOne(ticket)

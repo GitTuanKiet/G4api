@@ -9,7 +9,8 @@ const schemaCreateGiftCard = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
   orderId: Joi.string().required(),
   name: Joi.string().required(),
-  value: Joi.number().valid(100, 200, 300, 500, 1000).required(),
+  description: Joi.string(),
+  value: Joi.number().required(),
   status: Joi.string().valid('active', 'processing', 'used', 'inactive').default('inactive'),
   createdAt: Joi.date().default(new Date()),
   expiredAt: Joi.date().default(new Date() + 6 * 30 * 24 * 60 * 60 * 1000)

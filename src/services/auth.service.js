@@ -21,14 +21,14 @@ const loginService = async (data) => {
 
     // so sánh password
     const isMatch = bcrypt.compareSync(password, user.password)
-    if (!isMatch) throw new ApiError(StatusCodes.NON_AUTHORITATIVE_INFORMATION, 'Password is incorrect')
+    if (!isMatch) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Password is incorrect')
 
     // exclude password field
     delete user.password
     // tạo token và trả về
-    const token = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
+    const accessToken = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
     const refreshToken = Jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN })
-    return { token, refreshToken }
+    return { accessToken, refreshToken }
   } catch (error) {
     throw error
   }
@@ -104,7 +104,8 @@ const resetPasswordService = async (token) => {
 
     // hash password
     const salt = bcrypt.genSaltSync(10)
-    let password = Math.random().toString(36).substring(7)
+    let password = Math.random().toString(36).slice(-8)
+
     const newPassword = bcrypt.hashSync(password, salt)
 
     // cập nhật password
@@ -128,9 +129,9 @@ const refreshTokenService = async (refreshToken) => {
     delete user.password
 
     // tạo token mới và trả về
-    const token = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
+    const accessToken = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
-    return { token }
+    return { accessToken }
   } catch (error) {
     throw error
   }

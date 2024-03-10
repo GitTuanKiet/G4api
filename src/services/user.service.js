@@ -40,9 +40,9 @@ const updateProfile = async (userId, data) => {
 
     // tạo lại token với thông tin mới
     delete user.password
-    const token = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
+    const accessToken = Jwt.sign(user, JWT_SECRET, { expiresIn: EXPIRES_IN })
 
-    return token
+    return accessToken
   } catch (error) {
     throw error
   }
@@ -85,17 +85,17 @@ const getHistory = async (userId) => {
   try {
     const orderHistory = await OrderModels.findManyByUserId(userId)
 
-    // map theo type
+    // map theo order
     const data = {
       ticket: [],
       voucher: [],
       gift: [],
       other: []
     }
-    orderHistory.forEach(order => {
-      if (!order.type) order.type = 'other'
-      if (!data[order.type]) data[order.type] = [order]
-      else data[order.type] = [...data[order.type], order]
+    orderHistory.forEach(item => {
+      if (!item.order) item.type = 'other'
+      if (!data[item.order]) data[item.order] = [item]
+      else data[item.order] = [...data[item.order], item]
     })
 
     return data

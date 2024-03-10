@@ -24,12 +24,13 @@ const fetchAllByUserId = async (userId) => {
   }
 }
 
-const createCard = async (userId, type, data) => {
+const createCard = async (userId, order, data) => {
   try {
     // get price and delete from data
     const price = Number(data.price)
-    delete data.type
+    delete data.order
     delete data.price
+    delete data.currency
     delete data.return_url
     let cardData = {
       ...data,
@@ -37,7 +38,7 @@ const createCard = async (userId, type, data) => {
     }
 
     // switch case to create card
-    switch (type) {
+    switch (order) {
     case 'gift':
       cardData.value = price
       await GiftModels.createGift(cardData)
@@ -83,11 +84,12 @@ const updateStatusActive = async (orderId, data) => {
 
     // if card is ticket, push booked chairs and update status of voucher and gift used
     const ticket = await TicketModels.findByOrderId(orderId)
+
     if (ticket) {
       await Promise.all([
         ShowtimeServices.pushBookedChairs(ticket.showtimeId, ticket.chairs),
-        VoucherModels.updateStatusByOrderId(ticket.voucherOrderId, { status: 'used' }),
-        GiftModels.updateStatusByOrderId(ticket.giftOrderId, { status: 'used' })
+        VoucherModels.updateStatusByOrderId(ticket?.voucherOrderId, { status: 'used' }),
+        GiftModels.updateStatusByOrderId(ticket?.giftOrderId, { status: 'used' })
       ])
     }
 

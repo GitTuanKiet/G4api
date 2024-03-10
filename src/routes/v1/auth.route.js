@@ -20,7 +20,7 @@ router.route('/reset-password/:token')
 router.route('/verify-email/:token')
   .get(AuthControllers.verifyEmailController)
 
-router.route('/refresh-token')
-  .post(AuthValidations.refreshTokenValidation, AuthControllers.refreshTokenController)
+router.route('/refresh-token/:token')
+  .get(AuthControllers.refreshTokenController)
 
 module.exports = router

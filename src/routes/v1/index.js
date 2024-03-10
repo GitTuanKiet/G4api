@@ -20,11 +20,7 @@ router.use(require('middlewares/verifyJWT'))
 router.use('/user', require('./client/user.route'))
 router.use('/payment', require('./client/payment.route'))
 
-// check role middleware
-router.use(require('middlewares/checkRole'))
-
 // admin routes
-router.use('/admin/movie', require('./admin/movie.route'))
-router.use('/admin/cinema', require('./admin/cinema.route'))
+router.use('/admin', require('./admin'))
 
 module.exports = router

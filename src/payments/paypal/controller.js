@@ -6,15 +6,15 @@ import { CardServices } from 'services/card.service'
 import { sendMailOptions } from 'utils/mailer'
 
 
-let accessToken = ''
+let accessTokenPaypal = ''
 
 const createOrderController = async (req, res, next) => {
   try {
     const { _id } = req.user
 
     // Lấy access token
-    if (!accessToken) {
-      accessToken = await model.getAccessToken()
+    if (!accessTokenPaypal) {
+      accessTokenPaypal = await model.getAccessToken()
     }
 
     // Validate dữ liệu đầu vào
@@ -25,7 +25,7 @@ const createOrderController = async (req, res, next) => {
 
     // Tạo đơn hàng
     const orderData = model.paypalOrderData(validated)
-    const data = await model.createOrder(orderData, accessToken)
+    const data = await model.createOrder(orderData, accessTokenPaypal)
     if (data.error) {
       return res.status(StatusCodes.BAD_REQUEST).json(data.error)
     }
@@ -44,6 +44,8 @@ const createOrderController = async (req, res, next) => {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: 'No order id' })
     }
 
+    const fixedPrice = req.body.price.toFixed(2)
+
     await Promise.all([
     // Lưu đơn hàng vào database
       OrderModels.createOrder({
@@ -52,13 +54,15 @@ const createOrderController = async (req, res, next) => {
         orderId: data.id,
         status: data.status,
         name: req.body.name,
-        price: req.body.price,
-        type: req.body.type,
+        description: req.body.description,
+        currency: req.body.currency,
+        price: fixedPrice,
+        order: req.body.order,
         links: data.links
       }),
 
       // Lưu thông tin thẻ vào model tương ứng
-      CardServices.createCard(_id, req.body.type, { orderId: data.id, ...req.body })
+      CardServices.createCard(_id, req.body.order, { orderId: data.id, ...req.body, price: fixedPrice })
     ])
 
     // Trả về link thanh toán
@@ -72,12 +76,12 @@ const checkOutController = async (req, res, next) => {
   try {
     const { orderId } = req.params
     // Lấy access token
-    if (!accessToken) {
-      accessToken = await model.getAccessToken()
+    if (!accessTokenPaypal) {
+      accessTokenPaypal = await model.getAccessToken()
     }
 
     // Lấy thông tin đơn hàng
-    const order = await model.getOrder(orderId, accessToken)
+    const order = await model.getOrder(orderId, accessTokenPaypal)
     const { id, status } = order
 
     if (status === 'COMPLETED') {
@@ -86,7 +90,7 @@ const checkOutController = async (req, res, next) => {
 
     if (status === 'APPROVED') {
       // Xác nhận đơn hàng
-      const data = await model.captureOrder(id, accessToken)
+      const data = await model.captureOrder(id, accessTokenPaypal)
       if (data.error) {
         return res.status(StatusCodes.BAD_REQUEST).json(data.error)
       }
@@ -112,12 +116,12 @@ const cancelController = async (req, res, next) => {
   try {
     const { orderId } = req.params
     // Lấy access token
-    if (!accessToken) {
-      accessToken = await model.getAccessToken()
+    if (!accessTokenPaypal) {
+      accessTokenPaypal = await model.getAccessToken()
     }
 
     // Lấy thông tin đơn hàng
-    const order = await model.getOrder(orderId, accessToken)
+    const order = await model.getOrder(orderId, accessTokenPaypal)
     const { id, status } = order
 
     if (status === 'CREATED') {

@@ -10,7 +10,7 @@ router.route('/update-profile')
   .put(UserValidations.updateProfile, UserControllers.updateProfile)
 
 router.route('/avatar')
-  .post(upload.single('avatar'), UserValidations.uploadAvatar, UserValidations.uploadAvatar)
+  .post(upload.single('avatar'), UserValidations.uploadAvatar, UserControllers.uploadAvatar)
 
 router.route('/change-password')
   .put(UserValidations.changePassword, UserControllers.changePassword)

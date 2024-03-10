@@ -11,8 +11,10 @@ const schemaCreateOrder = Joi.object({
   orderId: Joi.string().required(),
   status: Joi.string().valid('CREATED', 'APPROVED', 'COMPLETED', 'VOIDED', 'REFUNDED').required(),
   name: Joi.string().required(),
+  description: Joi.string(),
+  currency: Joi.string().required(),
   price: Joi.number().required(),
-  type: Joi.string().valid('ticket', 'voucher', 'gift').required(),
+  order: Joi.string().valid('ticket', 'voucher', 'gift').required(),
   links: Joi.array().items(Joi.object({ href: Joi.string().required(), rel: Joi.string().required(), method: Joi.string().required() })).required(),
   createdAt: Joi.date().default(new Date())
 })
