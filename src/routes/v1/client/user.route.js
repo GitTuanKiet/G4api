@@ -4,6 +4,8 @@ import { upload } from 'utils/upload'
 import { UserControllers } from 'controllers/user.controller'
 import { UserValidations } from 'validations/user.validation'
 
+import { MemberCardControllers } from 'controllers/member.controller'
+
 const router = express.Router()
 
 router.route('/update-profile')
@@ -23,5 +25,14 @@ router.route('/history')
 
 router.route('/fetch-card')
   .get(UserControllers.fetchAllByUserId)
+
+router.route('/get-member-card')
+  .get(MemberCardControllers.getCard)
+
+router.route('/register-member-card')
+  .post(UserValidations.registerMemberCard, MemberCardControllers.registerMemberCard)
+
+router.route('/lost-member-card')
+  .delete(MemberCardControllers.lostMemberCard)
 
 module.exports = router

@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import model from './model'
 import { OrderModels } from 'models/order.model'
 import { CardServices } from 'services/card.service'
+import { UserModels } from 'models/user.model'
 
 import { sendMailOptions } from 'utils/mailer'
 
@@ -89,6 +90,13 @@ const checkOutController = async (req, res, next) => {
     }
 
     if (status === 'APPROVED') {
+      // Lấy thông tin đơn hàng trong database
+      const order = await OrderModels.findOneByOrderId(id)
+
+      if (!order) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'Order not found' })
+      }
+
       // Xác nhận đơn hàng
       const data = await model.captureOrder(id, accessTokenPaypal)
       if (data.error) {
@@ -98,7 +106,8 @@ const checkOutController = async (req, res, next) => {
       // Cập nhật trạng thái trong database
       await Promise.all([
         CardServices.updateStatusActive(id, { status: 'active', expiredAt: new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000) }),
-        OrderModels.updateOrderByOrderId(id, { status: data.status })
+        OrderModels.updateOrderByOrderId(id, { status: data.status }),
+        UserModels.updateUser(req.user._id, { POINTS: Number(req.user.POINTS) + Number(order.price) })
       ])
 
       // Gửi thông báo về client

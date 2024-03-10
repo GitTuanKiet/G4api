@@ -14,14 +14,7 @@ const updateProfile = async (req, res, next) => {
       address: Joi.string(),
       birthday: Joi.string().isoDate(),
       gender: Joi.string().valid('male', 'female', 'none'),
-      // avatar: Joi.string().pattern(/^(\/|\\)?uploads(\/|\\)?[^\s]+\.(jpg|jpeg|png|gif|svg)$/),
-      PIN: Joi.number(),
-
-      // _id của các collection khác
-      memberCardId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE),
-      voucherIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)),
-      giftIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE)),
-      couponIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE))
+      PIN: Joi.number()
     })
     await schemaUpdateProfile.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
     next()
@@ -71,9 +64,24 @@ const SetupPIN = async (req, res, next) => {
   }
 }
 
+const registerMemberCard = async (req, res, next) => {
+  try {
+    const schemaRegisterMemberCard = Joi.object({
+      number: Joi.string().required(),
+      pin: Joi.string().required(),
+      registeredDate: Joi.string().isoDate().required()
+    })
+    await schemaRegisterMemberCard.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
+  } catch (error) {
+    next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message))
+  }
+}
+
 export const UserValidations = {
   updateProfile,
   uploadAvatar,
   changePassword,
-  SetupPIN
+  SetupPIN,
+  registerMemberCard
 }

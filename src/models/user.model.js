@@ -15,7 +15,7 @@ const schemaCreateUser = Joi.object({
   address: Joi.string().default(''),
   gender: Joi.string().valid('male', 'female', 'none').default('none'),
   avatar: Joi.string().pattern(UPLOAD_REGEX),
-  birthday: Joi.string().isoDate().default(''),
+  birthday: Joi.string().isoDate().required(),
   memberCardId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).default(''),
   role: Joi.string().valid('user', 'admin').default('user'),
   POINTS: Joi.number().default(0),

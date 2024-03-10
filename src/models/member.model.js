@@ -8,11 +8,11 @@ const MemberCardCollection = 'member cards'
 const schemaCreateMemberCard = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
   level: Joi.string().valid('iron', 'bronze', 'silver', 'gold', 'platinum').required(),
-  status: Joi.string().valid('active', 'inactive').default('inactive'),
-  name: Joi.string().required(),
-  // sẽ bổ sung validate cho mã thẻ
+  point: Joi.number().default(0),
+  registeredDate: Joi.string().isoDate().required(),
   number: Joi.string().required(),
-  createdAt: Joi.date().default(new Date())
+  createdAt: Joi.date().default(new Date()),
+  updatedAt: Joi.date().default(new Date())
 })
 
 /**
