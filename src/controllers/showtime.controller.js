@@ -53,6 +53,7 @@ const addShowtime = async(req, res) => {
   // console.log(movies,cinemas)
   return res.render('add-showtime.ejs', { movies, cinemas })
 }
+
 const storageShowtime = async (req, res, next) => {
   try {
     // console.log(req.body)
@@ -110,10 +111,13 @@ const updateShowtime = async (req, res, next) => {
 
 const destroyShowtime = async (req, res, next) => {
   // xử lý delete
-  const showtimeID = req.params.id
-  await ShowtimeModels.deleteShowtime(showtimeID)
-    .then(() => res.redirect('/manager-showtime') )
-    .catch(next)
+  try {
+    const showtimeID = req.params.id
+    await ShowtimeModels.deleteShowtime(showtimeID)
+      .then(() => res.redirect('/manager-showtime') )
+  } catch (error) {
+    next(error)
+  }
 }
 
 const getManagerShowtime = async (req, res, next) => {
