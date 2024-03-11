@@ -5,6 +5,8 @@ import { MovieServices } from 'services/movie.service'
 import { ShowtimeModels } from 'models/showtime.model'
 import { MovieModels } from 'models/movie.model'
 
+import { slugify } from 'utils/formatters'
+
 const fetchAllController = async (req, res, next) => {
   try {
     const movies = await MovieServices.fetchAll()
@@ -59,6 +61,7 @@ const showMovie = async (req, res, next) =>
   const movie = await MovieModels.findOneById(movieId)
   return res.render('show-movie.ejs', { movie })
 }
+
 //create
 const addMovie = (req, res) => {
   return res.render('add-movie.ejs')
@@ -67,12 +70,17 @@ const addMovie = (req, res) => {
 const storageMovie = async(req, res, next) => {
   // xử lý lưu những thành phần vừa tạo
 
-  const formData = req.body
-  formData.actors = formData.actors.split(',').map(actor => actor.trim())
-  formData.directors = formData.directors.split(',').map(actor => actor.trim())
-  formData.trailer = formData.trailer.replace('youtu.be', 'www.youtube.com/embed')
-  await MovieModels.createMovie(formData)
-  res.redirect('/manager-movies')
+  try {
+    const formData = req.body
+    formData.actors = formData.actors.split(',').map(actor => actor.trim())
+    formData.directors = formData.directors.split(',').map(actor => actor.trim())
+    formData.trailer = formData.trailer.replace('youtu.be', 'www.youtube.com/embed')
+    formData.slug = slugify(formData.title)
+    await MovieModels.createMovie(formData)
+    res.redirect('/manager-movies')
+  } catch (error) {
+    next(error)
+  }
 }
 
 
@@ -85,18 +93,23 @@ const editMovie = async (req, res, next) =>
   return res.render('edit-movie.ejs', { movie })
 }
 
-const updateMovie = async(req, res) =>
+const updateMovie = async(req, res, next) =>
 {
 // xử lý update
   // console.log(req.body);
   // console.log(req.params.id)
-  const movieID = req.params.id
-  const formData = req.body
-  formData.actors = formData.actors.split(',').map(actor => actor.trim().replace(/^,|,$/g, ''))
-  formData.directors = formData.directors.split(',').map(director => director.trim().replace(/^,|,$/g, ''))
-  formData.trailer = formData.trailer.replace('youtu.be', 'www.youtube.com/embed')
-  await MovieModels.updateMovie(movieID, formData)
-  res.redirect('/manager-movies')
+  try {
+    const movieID = req.params.id
+    const formData = req.body
+    formData.actors = formData.actors.split(',').map(actor => actor.trim().replace(/^,|,$/g, ''))
+    formData.directors = formData.directors.split(',').map(director => director.trim().replace(/^,|,$/g, ''))
+    formData.trailer = formData.trailer.replace('youtu.be', 'www.youtube.com/embed')
+    if (formData.title) formData.slug = slugify(formData.title)
+    await MovieModels.updateMovie(movieID, formData)
+    res.redirect('/manager-movies')
+  } catch (error) {
+    next(error)
+  }
 }
 
 //delete
