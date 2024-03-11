@@ -32,6 +32,7 @@ const sendMail = (mailOptions) => {
 }
 
 export const sendMailOptions = (user, token, type) => {
+  console.log(`Mail => ${user.email} - ${type}`)
   let mailOptions = {}
   switch (type) {
   case 'verifyEmail':
@@ -102,11 +103,11 @@ const mailOptionsPaypalPayment = (user, data) => {
     to: user.email,
     subject: 'Paypal payment',
     html: `Dear ${user.name}, <br/><br/>
-    Paypal payment with order id: ${data.id}<br/><br/>
+    Paypal payment with order id: ${data.orderId}<br/><br/>
     Information:<br/>
     - Name: ${data.name}<br/>
     - Price: ${data.price}<br/>
-    - Type: ${data.type}<br/>
+    - Description: ${data.description}<br/>
     You can pay with this link: ${data.links[1].href}<br/><br/>
     OR you can use this order id to pay<br/><br/>
 

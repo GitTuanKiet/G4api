@@ -45,7 +45,12 @@ const createOrderController = async (req, res, next) => {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: 'No order id' })
     }
 
-    const fixedPrice = req.body.price.toFixed(2)
+    const body = req.body
+    const fixedPrice = body.price.toFixed(2)
+    const name = body.name
+    const description = body.description
+    const order = body.order
+    const currency = body.currency
 
     await Promise.all([
     // Lưu đơn hàng vào database
@@ -54,11 +59,11 @@ const createOrderController = async (req, res, next) => {
         payment: 'paypal',
         orderId: data.id,
         status: data.status,
-        name: req.body.name,
-        description: req.body.description,
-        currency: req.body.currency,
+        name,
+        description,
+        currency,
         price: fixedPrice,
-        order: req.body.order,
+        order,
         links: data.links
       }),
 
@@ -66,6 +71,7 @@ const createOrderController = async (req, res, next) => {
       CardServices.createCard(_id, req.body.order, { orderId: data.id, ...req.body, price: fixedPrice })
     ])
 
+    console.log(`Payment: userId => ${_id}, ${order} => ${name}, price => ${fixedPrice} ${currency}`)
     // Trả về link thanh toán
     return res.status(StatusCodes.OK).json({ link: data.links[1].href })
   } catch (error) {

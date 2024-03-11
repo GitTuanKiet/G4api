@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 
 let movies = []
-const date = new Date()
+let date = new Date()
 
 const fetchAll = async () => {
   try {
@@ -16,6 +16,7 @@ const fetchAll = async () => {
     const now = new Date()
     if (now - date > 1000 * 60 * 60 * 24) {
       movies.length = 0
+      date = new Date()
     }
 
     if (movies.length) {

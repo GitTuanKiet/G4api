@@ -3,13 +3,6 @@ import express from 'express'
 const router = express.Router()
 
 // public routes
-router.get('/uploads/:file', (req, res) => {
-  try {
-    res.sendFile(req.params.file, { root: 'uploads' })
-  } catch (err) {
-    res.status(404).send('File not found')
-  }
-})
 router.use('/fetch', require('./fetch.route'))
 router.use('/auth', require('./auth.route'))
 
