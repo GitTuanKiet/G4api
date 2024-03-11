@@ -12,4 +12,13 @@ router.route('/:movieId')
   .put(MovieValidations.updateMovieValidation, MovieControllers.updateMovieController)
   .delete(MovieControllers.deleteMovieController)
 
+router.get('/manager-movies', MovieControllers.getManagerMovies)
+router.get('/create-movie', MovieControllers.addMovie)
+router.post('/storate-movie', MovieControllers.storageMovie)
+router.get('/show-movie/:id', MovieControllers.showMovie)
+router.get('/edit-movie/:id', MovieControllers.editMovie)
+router.post('/update-movie/:id', MovieControllers.updateMovie)
+router.post('/delete-movie/:id', MovieControllers.destroyMovie)
+
 module.exports = router
+

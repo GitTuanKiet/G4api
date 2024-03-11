@@ -4,6 +4,8 @@ import exitHook from 'async-exit-hook'
 import compression from 'compression'
 import cor from 'cors'
 
+import configViewEngine from 'utils/viewEngine'
+
 import { connectMongo, disconnectMongo } from 'utils/database/mongodb'
 import APP_CONFIG from 'config/app.config'
 
@@ -18,6 +20,10 @@ const START_SERVER = () => {
 
   app.use(cor())
   app.use('/v1', require('routes/v1/undefined.route'))
+
+  configViewEngine(app)
+
+  app.use('/', require('routes/admin.route'))
 
   app.use(require('middlewares/cors'))
   app.use('/v1', require('routes/v1'))

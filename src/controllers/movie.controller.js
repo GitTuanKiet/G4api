@@ -2,6 +2,9 @@
 import { StatusCodes } from 'http-status-codes'
 import { MovieServices } from 'services/movie.service'
 
+import { ShowtimeModels } from 'models/showtime.model'
+import { MovieModels } from 'models/movie.model'
+
 const fetchAllController = async (req, res, next) => {
   try {
     const movies = await MovieServices.fetchAll()
@@ -42,9 +45,84 @@ const deleteMovieController = async (req, res, next) => {
   }
 }
 
+
+const getManagerMovies = async (req, res, next) => {
+  const movies = await MovieModels.list()
+  // console.log(movies)
+  res.render('manager-movies.ejs', { movies } )
+}
+
+//show
+const showMovie = async (req, res, next) =>
+{
+  const movieId =req.params.id
+  const movie = await MovieModels.findOneById(movieId)
+  return res.render('show-movie.ejs', { movie })
+}
+//create
+const addMovie = (req, res) => {
+  return res.render('add-movie.ejs')
+}
+
+const storageMovie = async(req, res, next) => {
+  // xử lý lưu những thành phần vừa tạo
+
+  const formData = req.body
+  formData.actors = formData.actors.split(',').map(actor => actor.trim())
+  formData.directors = formData.directors.split(',').map(actor => actor.trim())
+  formData.trailer = formData.trailer.replace('youtu.be', 'www.youtube.com/embed')
+  await MovieModels.createMovie(formData)
+  res.redirect('/manager-movies')
+}
+
+
+//edit
+const editMovie = async (req, res, next) =>
+{
+  const movieId =req.params.id
+  const movie = await MovieModels.findOneById(movieId)
+  // console.log(movie);
+  return res.render('edit-movie.ejs', { movie })
+}
+
+const updateMovie = async(req, res) =>
+{
+// xử lý update
+  // console.log(req.body);
+  // console.log(req.params.id)
+  const movieID = req.params.id
+  const formData = req.body
+  formData.actors = formData.actors.split(',').map(actor => actor.trim().replace(/^,|,$/g, ''))
+  formData.directors = formData.directors.split(',').map(director => director.trim().replace(/^,|,$/g, ''))
+  formData.trailer = formData.trailer.replace('youtu.be', 'www.youtube.com/embed')
+  await MovieModels.updateMovie(movieID, formData)
+  res.redirect('/manager-movies')
+}
+
+//delete
+const destroyMovie = async (req, res, next) => {
+  try {
+    const movieID = req.params.id
+    await ShowtimeModels.deleteShowtimeByMovieId(movieID) // Xoá các showtime liên quan đến phim
+    await MovieModels.deleteMovie(movieID) // Xoá phim
+
+    res.redirect('/manager-movies') // Chuyển hướng người dùng đến trang quản lý phim
+  } catch (error) {
+    next(error) // Truyền lỗi tới middleware xử lý lỗi tiếp theo
+  }
+}
+
 export const MovieControllers = {
   fetchAllController,
   createMovieController,
   updateMovieController,
-  deleteMovieController
+  deleteMovieController,
+  getManagerMovies,
+  addMovie,
+  storageMovie,
+  updateMovie,
+  editMovie,
+  destroyMovie,
+  showMovie
 }
+

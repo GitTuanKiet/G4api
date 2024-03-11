@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sửa phim</title>
+  
+  <link rel="stylesheet" href="/css/add-film.css">
+  <%- include('layout/css-layout.ejs') %>
+  <link rel="stylesheet" href="/css/home.css">
+ 
+</head>
+<body >
+
+<%- include('layout/header.ejs') %>
+
+
+<div class="container">
+    <h2 style="text-align: center;">Sửa phim</h2>
+    <form action="/update-movie/<%= movie._id %>" method="post">
+
+        <label for="1">Tiêu đề</label>
+        <br>
+       <input type="text" name="title" id="1" value="<%= movie.title %>">
+        <br>
+        <label for="2">Mô tả</label>
+        <br>
+        <textarea name="description" id="5" > <%= movie.description %></textarea>
+        <br>
+        <br>
+        <label for="9">Độ tuổi</label>
+        <br>
+       <select name="ageRestriction" id="9">
+        <option value="0" <% if (movie.ageRestriction == "0") { %> selected <% } %>>0</option>
+        <option value="13" <% if (movie.ageRestriction == "13") { %> selected <% } %>>13</option>
+        <option value="16" <% if (movie.ageRestriction == "16") { %> selected <% } %> >16</option>
+        <option value="18" <% if (movie.ageRestriction == "18") { %> selected <% } %>>18</option>
+       </select>
+       <br>
+        <br>
+        <label for="3">Ảnh bìa</label>
+        <br>
+        <input type="text" name="poster" id="3" value="<%= movie.poster %>">
+        <br>
+        <label for="4">Trailer</label>
+        <br>
+        <input type="text" name="trailer" id="4" value="<%= movie.trailer %>"> 
+        <br>
+        
+        <label for="5">Thời lượng</label>
+        <br>
+        <input type="number" name="duration" id="5" value="<%= movie.duration %>"> phút
+        <br>
+        <br>
+        <label for="6">Ngôn ngữ</label>
+        <br>
+         <input type="text" name="language" id="6" value="<%= movie.language %>">
+        <br>
+        <br>
+         <label for="7">Ngày khởi chiếu</label>
+         <br>
+        <input type="date" name="releaseDate" id="7" value="<%= movie.releaseDate.toISOString().slice(0, 10) %>">
+         <br>
+         <br>
+         <label for="8">Ngày dừng chiếu</label>
+         <br>
+         <input type="date" name="endDate" id="8" value="<%= movie.endDate.toISOString().slice(0, 10) %>">
+         <br>
+         <br>
+         <label for="8">Thể loại</label>
+         <br>
+         <% const genres = ["Hành Động", "Phiêu Lưu", "Hài Hước", "Tâm Lý", "Lãng mạn", "Kinh dị", "Lịch Sử", "Gia Đình", "Võ Thuật", "Gia Đình", "Võ Thuật", "Âm Nhạc", "Chiến Tranh", "Khoa Học Viễn Tưởng", "Hình Sự","Hoạt Hình"]; %>
+
+         <% genres.forEach(genre => { %>
+             <% if (movie.genres.includes(genre)) { %>
+                 <input name="genres" type="checkbox" value="<%= genre %>" checked> <%= genre %>
+             <% } else { %>
+                 <input name="genres" type="checkbox" value="<%= genre %>"> <%= genre %>
+             <% } %>
+         <% }); %>
+       <br>
+       
+         <label for="10">Diễn viên</label>
+         <br>
+         <input type="text" name="actors" id="10" value="<%= movie.actors.join(',') %>">
+         <br>
+         <br>
+         <label for="11">Đạo diễn</label>
+         <br>
+         <input type="text" name="directors" id="11" value="<%= movie.directors.join(',') %>">
+         <br>
+        <br>
+         <input type="submit" value="Lưu phim">
+    </form>
+</div>
+
+
+
+<%- include('layout/footer.ejs') %>
+<%- include('layout/js-layout.ejs') %>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Phim</title>
+  <%- include('layout/css-layout.ejs') %>
+  <link rel="stylesheet" href="/css/home.css">
+  <link rel="stylesheet" href="/css/manager-movie.css">
+</head>
+<body >
+
+<%- include('layout/header.ejs') %>
+
+  <div class="card-header">
+    <h3 class="card-title">Quản lý danh sách phim</h3>
+    <a href="/create-movie" type="button" class="btn btn-primary btn-create"><i class="fa-solid fa-circle-plus"></i> Thêm mới phim</a>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th class="th-list center">STT</th>
+          <th class="th-list">Tiêu đề</th>
+          <th class="th-list">Thời lượng</th>
+          <th class="th-list">Ngôn ngữ</th>
+          <th class="th-list">Ngày khởi chiếu</th>
+          <th class="th-list">Ngày dừng chiếu</th>
+          <th class="th-list">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let index = 1; %>
+        <% movies.forEach(function(movie) { %>
+          <tr>
+            <td scope="row"><%= index %></td>
+            <% index++; %>
+            <td><%= movie.title %></td>
+            <td><%= movie.duration %> phút</td>
+            <td><%= movie.language %></td>
+            <td>
+              <%= movie.releaseDate.toISOString().slice(0, 10) %>
+          </td>
+          <td>
+              <%= movie.endDate.toISOString().slice(0, 10) %>
+          </td>
+          
+          
+                  
+           
+            
+            <td class="action" style="height: 100%;">
+              <form action="/edit-movie/<%= movie._id %>" method="get">
+                <button type="submit" class="button-icon icon-update">
+                  <i class="fas fa-pen-to-square"></i>
+                </button>
+              </form>
+            
+    
+              
+                <form id="myForm" action="delete-movie/<%= movie._id %>" method="post">
+                  <button id="submitButton" type="submit" class="button-icon icon-delete" onclick="submitForm()">
+                    <i class="fas fa-trash-can"></i>
+                  </button>
+                </form>
+              <a href="/show-movie/<%= movie._id %>"><i class="fas fa-eye icon-show"></i></a>
+            </td>
+          </tr>
+      <% }); %>
+       
+      </tbody>
+      <tfoot>
+    </table>
+  </div>
+  <!-- /.card-body -->
+</div>
+
+<%- include('layout/footer.ejs') %>
+  <script src="/js/manager-movie.js"></script>
+<%- include('layout/js-layout.ejs') %>
+</body>
+</html>

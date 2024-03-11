@@ -87,5 +87,14 @@ export const CinemaModels = {
   findOneById,
   fetchAll,
   createCinema,
-  updateCinema
+  updateCinema,
+  listCinemaNameId
+}
+
+const listCinemaNameId = async () => {
+  try {
+    return await getMongo().collection(CinemaCollection).find({}, { projection: { _id: 1, name: 1 } }).toArray()
+  } catch (error) {
+    throw error
+  }
 }

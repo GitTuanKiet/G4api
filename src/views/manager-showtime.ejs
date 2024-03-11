@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang chủ</title>
+  
+
+  <%- include('layout/css-layout.ejs') %>
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body >
+
+<%- include('layout/header.ejs') %>
+
+  <div class="card-header">
+    <h3 class="card-title">Quản lý danh sách suất chiếu</h3>
+    <a href="/create-showtime" type="button" class="btn btn-primary btn-create"><i class="fa-solid fa-circle-plus"></i> Thêm mới suất chiếu</a>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th class="th-list center">STT</th>
+          <th class="th-list">Tên phim</th>
+          <th class="th-list">Rạp chiếu</th>
+          <th class="th-list">Ngày chiếu</th>
+          <th class="th-list">Giờ chiếu</th>
+          <th class="th-list">Giá vé</th>
+          <th class="th-list">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let index = 1; %>
+        <% showtimes.forEach(function(showtime) { %>
+          <tr>
+            <td scope="row"><%= index %></td>
+            <% index++; %>
+            <td><%= showtime.nameCinema %></td>
+            <td><%= showtime.nameMovie %></td>
+            <td>
+              <%= showtime.day.toISOString().slice(0, 10) %>
+          </td>
+          <td>
+            <%= showtime.start %>:00 - <%= showtime.end %>:00
+          </td>
+          <td>
+            <%= showtime.price %> $
+          </td>
+        
+          <td class="action">
+            <form action="edit-showtime/<%= showtime._id %>" method="get">
+              <button type="submit" class="button-icon icon-update">
+                <i class="fas fa-pen-to-square"></i>
+              </button>
+            </form>
+              <form id="deleteForm" action="delete-showtime/<%= showtime._id %>" method="post">
+                <button id="confirmButton" type="submit" class="button-icon icon-delete">
+                  <i class="fas fa-trash-can"></i>
+                </button>
+              </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+      <tfoot>
+    
+    </table>
+  </div>
+  <!-- /.card-body -->
+</div>
+
+<%- include('layout/footer.ejs') %>
+<%- include('layout/js-layout.ejs') %>
+
+</body>
+</html>

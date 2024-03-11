@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
+import moment from 'moment'
 import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
 import { fixObjectId } from 'utils/formatters'
 
@@ -135,5 +136,52 @@ export const ShowtimeModels = {
   createShowtime,
   updateShowtime,
   deleteShowtime,
-  pushBookedChairs
+  pushBookedChairs,
+  listShowtime,
+  deleteShowtimeByMovieId
+}
+
+
+// Xác định hàm để xóa các bản ghi có thuộc tính 'day' trước thời điểm hiện tại
+async function deletePastShowtimes() {
+  try {
+    const db = await getMongo()
+    const collection = db.collection(ShowtimeCollection)
+
+    // Lấy thời điểm hiện tại
+    const currentDate = moment().startOf('day')
+
+    // Xác định điều kiện để xóa các bản ghi
+    const filter = {
+      day: { $lt: currentDate.toDate() } // Lọc các bản ghi có thuộc tính 'day' nhỏ hơn thời điểm hiện tại
+    }
+
+    // Xóa các bản ghi
+    const result = await collection.deleteMany(filter)
+
+    console.log(`${result.deletedCount} bản ghi đã được xóa.`)
+
+  } catch (error) {
+    console.error('Lỗi khi xóa các bản ghi:', error)
+    throw error
+  }
+}
+
+setInterval(deletePastShowtimes, 12*60*60*1000)
+
+
+const listShowtime = async () => {
+  try {
+    return await getMongo().collection(ShowtimeCollection).find().toArray()
+  } catch (error) {
+    throw error
+  }
+}
+
+const deleteShowtimeByMovieId = async (movieId) => {
+  try {
+    return await getMongo().collection(ShowtimeCollection).deleteMany({ movieId: fixObjectId(movieId) })
+  } catch (error) {
+    throw error
+  }
 }

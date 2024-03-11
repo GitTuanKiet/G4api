@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang chủ</title>
+  <link rel="stylesheet" href="css/home.css">
+  <%- include('layout/css-layout.ejs') %>
+  <link rel="stylesheet" href="css/financial-report.css">
+</head>
+<body >
+
+  <%- include('layout/header.ejs') %>
+
+  <h2>Báo cáo doanh thu</h2>
+
+  <table id="example2" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            
+            <th class="th-list">Từ ngày: 1/1/2024</th>
+            <th colspan="13" class="th-list th-title">Báo cáo doanh thu 12 tháng</th>
+            
+        </tr>
+      <tr>
+        <th class="th-list"></th>
+        <th class="th-list">1/2024</th>
+        <th class="th-list">2/2024</th>
+        <th class="th-list">3/2024</th>
+        <th class="th-list">4/2024</th>
+        <th class="th-list">5/2024</th>
+        <th class="th-list">6/2024</th>
+        <th class="th-list">7/2024</th>
+        <th class="th-list">8/2024</th>
+        <th class="th-list">9/2024</th>
+        <th class="th-list">10/2024</th>
+        <th class="th-list">11/2024</th>
+        <th class="th-list">12/2024</th>
+        <th class="th-list th-sum">Tổng của cả 12 tháng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Doanh Thu Đơn Đặt</td>
+      
+       <% let sumPrice = 0 %>
+        <% for (let i = 1; i <= 12; i++) { %>
+          <% const monthData = totalPriceByMonth.find(data => data.month === i); %>
+          <% if (monthData) { %>
+              <td><%= monthData.totalAmount %> $</td>
+              <% sumPrice +=monthData.totalAmount %>
+          <% } else { %>
+              <td>0 $</td>
+          <% } %>
+      <% } %>
+        <td class="td-sum"><%= sumPrice %> $</td>
+            
+        
+      </tr>
+      <tr>
+        <td scope="row">Số Lượng Đơn Đặt</td>
+       <% let sumOder = 0 %>
+        <% for (let i = 1; i <= 12; i++) { %>
+          <% const monthData = totalPriceByMonth.find(data => data.month === i); %>
+          <% if (monthData) { %>
+              <td><%= monthData.orderCount %></td>
+              <% sumOder += monthData.orderCount %>
+          <% } else { %>
+              <td>0</td>
+          <% } %>
+      <% } %>
+        <td class="td-sum"><%= sumOder %></td>
+            
+        
+      </tr>
+    </tbody>
+    <tfoot>
+  
+  </table>
+
+ 
+  <%- include('layout/js-layout.ejs') %>
+
+</body>
+</html>

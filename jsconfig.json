@@ -11,7 +11,8 @@
       "routes/*": ["src/routes/*"],
       "services/*": ["src/services/*"],
       "utils/*": ["src/utils/*"],
-      "validations/*": ["src/validations/*"]
+      "validations/*": ["src/validations/*"],
+      "views/*": ["src/views/*"]
     }
   }
 }

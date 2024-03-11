@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sửa suất chiếu</title>
+  
+  <link rel="stylesheet" href="/css/add-film.css">
+  <%- include('layout/css-layout.ejs') %>
+  <link rel="stylesheet" href="/css/home.css">
+ 
+</head>
+<body >
+
+<%- include('layout/header.ejs') %>
+<div class="container">
+    <h2>Sửa suất chiếu</h2>
+    <form action="/update-showtime/<%= showtime._id %>" method="post">
+
+        <label for="1">Chọn rạp</label>
+        <br>
+        <select name="cinemaId" id="cinemaId">
+            <% cinemas.forEach(function(cinema) { %>
+                <option value="<%= cinema._id %>" <% if (showtime && showtime.cinemaId.toString() === cinema._id.toString()) { %> selected <% } %> ><%= cinema.name %></option>
+            <% }) %>
+        </select>
+        
+        
+        <br>
+        <br>
+        <label for="2">Tên phim</label>
+        <br>
+        <select name="movieId" id="2">
+            <% movies.forEach(function(movie) { %>
+                
+            <option value="<%= movie._id %>" <% if (showtime && showtime.movieId.toString() === movie._id.toString()) { %> selected <% } %>  ><%= movie.title %></option>
+            <% }); %>
+        </select>
+        <br>
+    <br>
+    <label for="4">Suất chiếu</label>
+    <br>
+    <select name="start" id="4">
+        <option value="9" <% if (showtime.start =="9") { %> selected <% } %>>9:00</option>
+        <option value="11" <% if (showtime.start =="11") { %> selected <% } %>>11:00</option>
+        <option value="13" <% if (showtime.start =="13") { %> selected <% } %>>13:00</option>
+        <option value="15" <% if (showtime.start =="15") { %> selected <% } %>>15:00</option>
+        <option value="17" <% if (showtime.start =="17") { %> selected <% } %>>17:00</option>
+        <option value="19" <% if (showtime.start =="19") { %> selected <% } %>>19:00</option>
+        <option value="21"<% if (showtime.start =="21") { %> selected <% } %>>21:00</option>
+    </select>
+<br>
+<br>
+    <label for="5">Ngày chiếu</label>
+         <br>
+         <input type="date" name="day" id="5" value ="<%= showtime.day.toISOString().slice(0, 10) %>">
+  
+
+    
+         <br><br>
+         <label for="5">Giá suất chiếu</label>
+         <br>
+         <select name="price" id="6">
+             <option value="3" <% if (showtime.price =="3") { %> selected <% } %>>3$</option>
+             <option value="4" <% if (showtime.price =="4") { %> selected <% } %>>4$</option>
+             <option value="5" <% if (showtime.price =="5") { %> selected <% } %>>5$</option>
+         </select>
+         <br>
+    <br><br>
+         <input type="submit" value="Lưu suất chiếu">
+    </form>
+</div>
+
+
+
+
+<%- include('layout/footer.ejs') %>
+  <script src="/js/home.js"></script>
+<%- include('layout/js-layout.ejs') %>
+
+</body>
+</html>
