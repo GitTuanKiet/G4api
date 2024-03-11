@@ -130,17 +130,6 @@ const pushBookedChairs = async (ShowtimeId, chairs) => {
   }
 }
 
-export const ShowtimeModels = {
-  fetchAll,
-  findOneById,
-  createShowtime,
-  updateShowtime,
-  deleteShowtime,
-  pushBookedChairs,
-  listShowtime,
-  deleteShowtimeByMovieId
-}
-
 
 // Xác định hàm để xóa các bản ghi có thuộc tính 'day' trước thời điểm hiện tại
 async function deletePastShowtimes() {
@@ -185,3 +174,16 @@ const deleteShowtimeByMovieId = async (movieId) => {
     throw error
   }
 }
+
+export const ShowtimeModels = {
+  fetchAll,
+  findOneById,
+  createShowtime,
+  updateShowtime,
+  deleteShowtime,
+  pushBookedChairs,
+  listShowtime,
+  deleteShowtimeByMovieId
+}
+
+

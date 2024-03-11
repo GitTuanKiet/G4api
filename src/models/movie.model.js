@@ -16,8 +16,8 @@ const schemaCreateMovie = Joi.object({
   trailer: Joi.string().required(),
   duration: Joi.number().required(),
   language: Joi.string().required(),
-  releaseDate: Joi.date().required(),
-  endDate: Joi.date().required(),
+  releaseDate: Joi.date().required().iso(),
+  endDate: Joi.date().required().iso(),
   genres: Joi.array().items(Joi.string()).required(),
   actors: Joi.array().items(Joi.string()).required(),
   directors: Joi.array().items(Joi.string()).required(),
@@ -85,7 +85,8 @@ const createMovie = async (data) => {
  */
 const updateMovie = async (movieId, data) => {
   try {
-    return await getMongo().collection(MovieCollection).findOneAndUpdate({ _id: fixObjectId(movieId) }, { $set: data }, { returnDocument: 'after' })
+    const value = await validateMovie(data)
+    return await getMongo().collection(MovieCollection).findOneAndUpdate({ _id: fixObjectId(movieId) }, { $set: value }, { returnDocument: 'after' })
   } catch (error) {
     throw error
   }

@@ -64,15 +64,6 @@ const updateOrderByOrderId = async (orderId, data) => {
   }
 }
 
-export const OrderModels = {
-  findOneByOrderId,
-  createOrder,
-  updateOrderByOrderId,
-  findManyByUserId,
-  listOders,
-  calculateTotalPriceByMonth
-}
-
 const listOders = async () => {
   try {
     return await getMongo().collection(OrderCollection).find().toArray()
@@ -127,3 +118,14 @@ function calculateTotalPriceByMonth(orders) {
     throw error
   }
 }
+
+
+export const OrderModels = {
+  findOneByOrderId,
+  createOrder,
+  updateOrderByOrderId,
+  findManyByUserId,
+  listOders,
+  calculateTotalPriceByMonth
+}
+

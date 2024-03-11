@@ -83,13 +83,6 @@ const updateCinema = async (cinemaId, data) => {
   }
 }
 
-export const CinemaModels = {
-  findOneById,
-  fetchAll,
-  createCinema,
-  updateCinema,
-  listCinemaNameId
-}
 
 const listCinemaNameId = async () => {
   try {
@@ -97,4 +90,12 @@ const listCinemaNameId = async () => {
   } catch (error) {
     throw error
   }
+}
+
+export const CinemaModels = {
+  findOneById,
+  fetchAll,
+  createCinema,
+  updateCinema,
+  listCinemaNameId
 }
