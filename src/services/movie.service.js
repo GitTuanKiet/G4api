@@ -71,9 +71,12 @@ const updateMovie = async (movieId, data) => {
     }
 
     if (data.poster) {
-      if (check.poster && check.poster !== data.poster) {
-        const filePath = path.join('./', check.poster)
-        await fs.promises.unlink(filePath)
+      const oldPoster = check.poster
+      if (oldPoster && oldPoster !== data.poster) {
+        const filePath = path.join('./', oldPoster)
+        if (fs.existsSync(filePath)) {
+          await fs.promises.unlink(filePath)
+        }
       }
     }
 
@@ -96,7 +99,9 @@ const deleteMovie = async (movieId) => {
 
     if (check.poster) {
       const filePath = path.join('./', check.poster)
-      await fs.promises.unlink(filePath)
+      if (fs.existsSync(filePath)) {
+        await fs.promises.unlink(filePath)
+      }
     }
 
     const result = await MovieModels.deleteMovie(movieId)

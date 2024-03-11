@@ -28,9 +28,14 @@ const updateProfile = async (userId, data) => {
 
     // nếu thay avatar thì xóa avatar cũ trong uploads
     if (data.avatar) {
-      if (check.avatar && check.avatar !== data.avatar) {
-        const filePath = path.join('./', check.avatar)
-        await fs.promises.unlink(filePath)
+      const oldAvatar = check?.avatar
+      if (oldAvatar && oldAvatar !== data.avatar) {
+        const filePath = path.join('./', oldAvatar)
+        // check if exists file
+        if (fs.existsSync(filePath)) {
+          // remove file if
+          await fs.promises.unlink(filePath)
+        }
       }
     }
 
