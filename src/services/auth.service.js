@@ -88,6 +88,7 @@ const forgotPasswordService = async (data) => {
 
     // gửi email
     sendMailOptions(user, token, 'forgotPassword')
+    return
   } catch (error) {
     throw error
   }
@@ -113,6 +114,7 @@ const resetPasswordService = async (token) => {
 
     // gửi email
     sendMailOptions(user, newPassword, 'resetPassword')
+    return
   } catch (error) {
     throw error
   }

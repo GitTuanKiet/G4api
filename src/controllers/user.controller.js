@@ -51,6 +51,7 @@ const getHistory = async (req, res) => {
   try {
     const { _id } = req.user
     const data = await UserServices.getHistory(_id)
+
     return res.status(StatusCodes.OK).json(data)
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
