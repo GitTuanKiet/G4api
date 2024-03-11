@@ -1,0 +1,20 @@
+import { OrderModels } from '../models/order.model'
+
+
+const financialReport = async(req, res) =>
+{
+  // res.render('financial-report.ejs')
+}
+
+const ordersReport = async(req, res) =>
+{
+  const orders = await OrderModels.listOders()
+  const totalPriceByMonth = OrderModels.calculateTotalPriceByMonth(orders)
+  console.log(totalPriceByMonth)
+  res.render('orders-report.ejs', { totalPriceByMonth })
+}
+
+export const ReportControllers = {
+  financialReport,
+  ordersReport
+}

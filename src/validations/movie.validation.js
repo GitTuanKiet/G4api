@@ -5,9 +5,9 @@ import ApiError from 'utils/ApiError'
 import path from 'path'
 
 const createMovieValidation = async (req, res, next) => {
-  if (req.file) {
-    req.body.poster = path.join('/', req.file.path)
-  }
+  // if (req.file) {
+  //   req.body.poster = path.join('/', req.file.path)
+  // }
   try {
     const schemaCreateMovie = Joi.object({
       title: Joi.string().required(),
@@ -15,7 +15,8 @@ const createMovieValidation = async (req, res, next) => {
       ageRestriction: Joi.number().valid(0, 13, 16, 18).required(),
       duration: Joi.number().required(),
       releaseDate: Joi.date().required(),
-      poster: Joi.string().pattern(UPLOAD_REGEX).required(),
+      // poster: Joi.string().pattern(UPLOAD_REGEX).required(),
+      poster: Joi.string().required(),
       trailer: Joi.string().required(),
       language: Joi.string().required(),
       genres: Joi.array().items(Joi.string()).required(),
@@ -40,7 +41,8 @@ const updateMovieValidation = async (req, res, next) => {
       ageRestriction: Joi.number().valid(0, 13, 16, 18),
       duration: Joi.number(),
       releaseDate: Joi.date(),
-      poster: Joi.string().pattern(UPLOAD_REGEX),
+      // poster: Joi.string().pattern(UPLOAD_REGEX),
+      poster: Joi.string(),
       trailer: Joi.string(),
       language: Joi.string(),
       genres: Joi.array().items(Joi.string()),

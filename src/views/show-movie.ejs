@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xem chi tiết phim</title>
+  
+  <link rel="stylesheet" href="/css/show-movie.css">
+  <%- include('layout/css-layout.ejs') %>
+  <link rel="stylesheet" href="/css/home.css">
+ 
+</head>
+<body >
+
+<%- include('layout/header.ejs') %>
+
+
+
+<div class="container">
+    <h2 style="text-align: center;">Xem chi tiết phim <%= movie.title %> </h2>
+    
+</div>
+
+<table>
+    <tbody>
+        <tr>
+            <td>Tiêu đề</td>
+            <td><%= movie.title %></td>
+          </tr>
+          <tr>
+              <td>Mô tả</td>
+              <td>
+                    <div id="summary">
+                        <%= movie.description.substring(0, 250) + '...' %>
+                        <a class="summary-text" href="#" onclick="showFullSummary('<%= movie.description %>')">
+                        xem chi tiết
+                        </a>
+                    </div>
+                    <div id="popupOverlay" onclick="closePopup()">
+                        <div id="popupContent">
+                        <%= movie.description %>
+                        </div>
+                    </div>
+                
+               </td>
+          </tr>
+          <tr>
+              <td>Độ tuổi</td>
+              <td><%= movie.ageRestriction %></td>
+          </tr>
+          <tr>
+              <td>Ảnh bìa (url)</td>
+              <td>
+                <img src="<%= movie.poster %>" alt="">
+               </td>
+          </tr>
+          <tr>
+            <td>Trailer(url youtube)</td>
+            <td>
+                <a href="#" class="openTrailer" onclick="openTrailer('<%= movie.trailer %>')">Xem trailer</a>
+                <div id="overlayTrailer"></div>
+                <div id="popupTrailer">
+                    <iframe id="iframeTrailer"  title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+
+              
+            </td>
+          </tr>
+          <tr>
+              <td>Thời lượng</td>
+              <td><%= movie.duration %> phút</td>
+          </tr>
+          <tr>
+              <td>Ngôn ngữ</td>
+              <td><%= movie.language %></td>
+          </tr>
+          <tr>
+              <td>Ngày khởi chiếu</td>
+              <td><%= movie.releaseDate.toISOString().slice(0, 10) %></td>
+          </tr>
+          <tr>
+              <td>Ngày dừng chiếu</td>
+              <td><%= movie.endDate.toISOString().slice(0, 10) %></td>
+          </tr>
+          <tr>
+              <td>Thể loại</td>
+              <td> 
+                  <%= movie.genres.join(',') %>
+                </td>
+          </tr>
+          <tr>
+              <td>Diễn viên</td>
+              <td><%= movie.actors.join(',') %></td>
+          </tr>
+          <tr>
+              <td>Đạo diễn</td>
+              <td><%= movie.directors.join(',') %></td>
+          </tr>
+    </tbody>
+    
+  </table>
+
+
+<%- include('layout/footer.ejs') %>
+  <script src="/js/show-movie.js"></script>
+<%- include('layout/js-layout.ejs') %>
+
+</body>
+</html>

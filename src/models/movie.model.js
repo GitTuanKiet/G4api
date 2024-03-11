@@ -11,7 +11,8 @@ const schemaCreateMovie = Joi.object({
   slug: Joi.string().required(),
   description: Joi.string().required(),
   ageRestriction: Joi.number().valid(0, 13, 16, 18).required(),
-  poster: Joi.string().pattern(UPLOAD_REGEX).required(),
+  // poster: Joi.string().pattern(UPLOAD_REGEX).required(),
+  poster: Joi.string().required(),
   trailer: Joi.string().required(),
   duration: Joi.number().required(),
   language: Joi.string().required(),
@@ -67,9 +68,10 @@ const fetchAll = async () => {
  * @param {*} data
  * @returns {Promise<result>}
  */
-const createMovie = async (validatedData) => {
+const createMovie = async (data) => {
   try {
-    return await getMongo().collection(MovieCollection).insertOne(validatedData)
+    const value = await validateMovie(data)
+    return await getMongo().collection(MovieCollection).insertOne(value)
   } catch (error) {
     throw error
   }
@@ -102,6 +104,16 @@ const deleteMovie = async (movieId) => {
   }
 }
 
+const list = async () => {
+
+  return await getMongo().collection(MovieCollection).find().toArray()
+}
+
+const listMovieNameId = async () => {
+
+  return await getMongo().collection(MovieCollection).find({}, { projection: { _id: 1, title: 1 } }).toArray()
+}
+
 // export các hàm để sử dụng
 export const MovieModels = {
   validateMovie,
@@ -109,5 +121,8 @@ export const MovieModels = {
   fetchAll,
   createMovie,
   updateMovie,
-  deleteMovie
+  deleteMovie,
+  list,
+  listMovieNameId
 }
+
