@@ -16,9 +16,8 @@ const fetchAllController = async (req, res, next) => {
 
 const createMovieController = async (req, res, next) => {
   try {
-    const movie = await MovieServices.createMovie(req.body)
-
-    return res.render('show-movie.ejs', { movie })
+    await MovieServices.createMovie(req.body)
+    res.redirect('/manager-movies');
   } catch (error) {
     next(error)
   }
@@ -27,9 +26,8 @@ const createMovieController = async (req, res, next) => {
 const updateMovieController = async (req, res, next) => {
   try {
     const { movieId } = req.params
-    const movie = await MovieServices.updateMovie(movieId, req.body)
-
-    return res.render('show-movie.ejs', { movie })
+    await MovieServices.updateMovie(movieId, req.body)
+    res.redirect('/manager-movies');
   } catch (error) {
     next(error)
   }

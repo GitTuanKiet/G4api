@@ -105,7 +105,11 @@
       theaterSelect.appendChild(option);
     });
   };
-
+  function updateTheatersOnPageLoad() {
+    const selectedCinemaId = cinemaSelect.value;
+    filterTheaters(selectedCinemaId);
+}
+updateTheatersOnPageLoad();
   cinemaSelect.addEventListener('change', (e) => {
     filterTheaters(e.target.value);
   });
