@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { MovieModels } from 'models/movie.model'
+import { ShowtimeModels } from 'models/showtime.model'
 import { slugify } from 'utils/formatters'
 import fs from 'fs'
 import path from 'path'
@@ -47,8 +48,10 @@ const fetchAll = async () => {
 const createMovie = async (data) => {
   try {
     data.slug = slugify(data.title)
-    const validatedData = await MovieModels.validateMovie(data)
-    const result = await MovieModels.createMovie(validatedData)
+    data.actor = data.actors.split(',').map(actor => actor.trim())
+    data.director = data.directors.split(',').map(director => director.trim())
+    data.trailer = data.trailer.replace('youtu.be', 'www.youtube.com/embed')
+    const result = await MovieModels.createMovie(data)
 
     if (result.acknowledged) {
       movies.length = 0
@@ -66,9 +69,13 @@ const updateMovie = async (movieId, data) => {
     const check = await MovieModels.findOneById(movieId)
     if (!check) throw new ApiError(StatusCodes.NOT_FOUND, 'Movie not found')
 
-    if (data.title) {
-      data.slug = slugify(data.title)
-    }
+    if (data.title) data.slug = slugify(data.title)
+
+    data.actors = data.actors.split(',').map(actor => actor.trim().replace(/^,|,$/g, ''))
+    data.directors = data.directors.split(',').map(director => director.trim().replace(/^,|,$/g, ''))
+    data.trailer = data.trailer.replace('youtu.be', 'www.youtube.com/embed')
+    data.releaseDate = new Date(data.releaseDate)
+    data.endDate = new Date(data.endDate)
 
     if (data.poster) {
       const oldPoster = check.poster
@@ -104,7 +111,8 @@ const deleteMovie = async (movieId) => {
       }
     }
 
-    const result = await MovieModels.deleteMovie(movieId)
+    const [result] = await Promise.all([MovieModels.deleteMovie(movieId), ShowtimeModels.deleteShowtimeByMovieId(movieId)])
+    console.log('🚀 ~ deleteMovie ~ result:', result)
     if (result.acknowledged) {
       movies.length = 0
     }

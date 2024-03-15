@@ -23,8 +23,9 @@
       <thead>
         <tr>
           <th class="th-list center">STT</th>
-          <th class="th-list">Tên phim</th>
           <th class="th-list">Rạp chiếu</th>
+          <th class="th-list">Phòng chiếu</th>
+          <th class="th-list">Tên phim</th>
           <th class="th-list">Ngày chiếu</th>
           <th class="th-list">Giờ chiếu</th>
           <th class="th-list">Giá vé</th>
@@ -38,6 +39,7 @@
             <td scope="row"><%= index %></td>
             <% index++; %>
             <td><%= showtime.nameCinema %></td>
+            <td><%= showtime.nameTheater %></td>
             <td><%= showtime.nameMovie %></td>
             <td>
               <%= showtime.day.toISOString().slice(0, 10) %>

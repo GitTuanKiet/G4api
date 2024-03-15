@@ -31,7 +31,13 @@ const createCinema = async (data) => {
 
 const updateCinema = async (cinemaId, data) => {
   try {
-    const result = await CinemaModels.updateCinema(cinemaId, data)
+    const newData = {
+      $set: {
+        ...data,
+        updatedAt: new Date()
+      }
+    }
+    const result = await CinemaModels.updateCinema(cinemaId, newData)
     if (result.acknowledged) {
       cinemas.length = 0
     }
@@ -40,7 +46,6 @@ const updateCinema = async (cinemaId, data) => {
     throw error
   }
 }
-
 
 export const CinemaServices = {
   fetchAll,

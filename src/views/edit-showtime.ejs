@@ -17,12 +17,21 @@
     <h2>Sửa suất chiếu</h2>
     <form action="/update-showtime/<%= showtime._id %>" method="post">
 
-        <label for="1">Chọn rạp</label>
+        <label for="0">Chọn rạp</label>
         <br>
-        <select name="cinemaId" id="cinemaId">
+        <% const theater = theaters.find((theater) => showtime.theaterId.toString() === theater._id.toString()) %>
+        <select id="cinemaId">
             <% cinemas.forEach(function(cinema) { %>
-                <option value="<%= cinema._id %>" <% if (showtime && showtime.cinemaId.toString() === cinema._id.toString()) { %> selected <% } %> ><%= cinema.name %></option>
+                <option value="<%= cinema._id %>" <% if (showtime && cinema._id.toString() === theater.cinemaId.toString()) { %> selected <% } %> ><%= cinema.name %></option>
             <% }) %>
+        </select>
+
+        <br>
+        <br>
+        <label for="1">Chọn phòng chiếu</label>
+        <br>
+        <select name="theaterId" id="theaterId">
+                <option value="<%= theater._id %>" selected ><%= theater.name %></option>
         </select>
         
         
@@ -71,12 +80,35 @@
     </form>
 </div>
 
-
-
-
 <%- include('layout/footer.ejs') %>
   <script src="/js/home.js"></script>
 <%- include('layout/js-layout.ejs') %>
 
 </body>
+
+<script>
+  const cinemaSelect = document.getElementById('cinemaId');
+  const theaterSelect = document.getElementById('theaterId');
+
+  const temp = '<%= JSON.stringify(theaters) %>';
+  const listTheater = JSON.parse(temp.replaceAll('&#34;', '"'))
+
+  const filterTheaters = (selectedCinemaId) => {
+    const filteredTheater = listTheater.filter(theater => theater.cinemaId === selectedCinemaId);
+
+    theaterSelect.innerHTML = '';
+
+    filteredTheater.forEach(theater => {
+      const option = document.createElement('option');
+      option.value = theater._id;
+      option.textContent = theater.name;
+      theaterSelect.appendChild(option);
+    });
+  };
+
+  cinemaSelect.addEventListener('change', (e) => {
+    filterTheaters(e.target.value);
+  });
+</script>
+
 </html>

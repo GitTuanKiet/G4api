@@ -1,30 +1,44 @@
 /* eslint-disable no-useless-catch */
 import { ShowtimeModels } from 'models/showtime.model'
 import { MovieModels } from 'models/movie.model'
-import { CinemaModels } from 'models/cinema.model'
 import ApiError from 'utils/ApiError'
 import { cloneDeep } from 'lodash'
 import { StatusCodes } from 'http-status-codes'
+import { TheaterModels } from 'models/theater.model'
 
 const InvalidFields = ['_id', 'createdAt', 'updatedAt']
 let showtimes = []
 
-const createShowtime = async (data) => {
+const createManyShowtime = async (data) => {
   try {
-    // check if movie and cinema exist
-    const [movie, cinema] = await Promise.all([
-      MovieModels.findOneById(data.movieId),
-      CinemaModels.findOneById(data.cinemaId)
-    ])
-    if (!movie) throw new ApiError(StatusCodes.NOT_FOUND, 'Movie not found')
-    if (!cinema) throw new ApiError(StatusCodes.NOT_FOUND, 'Cinema not found')
 
-    // calculate end time and create showtime
-    const newData = {
-      ...data,
-      end: data.start + Math.floor(movie.duration / 60) + (movie.duration % 60 > 0 ? 1 : 0)
+    // check if movie and theater exist
+    const [movie, theater] = await Promise.all([
+      MovieModels.findOneById(data.movieId),
+      TheaterModels.findOneById(data.theaterId)
+    ])
+
+    if (!movie) throw new ApiError(StatusCodes.NOT_FOUND, 'Movie not found')
+    if (!theater) throw new ApiError(StatusCodes.NOT_FOUND, 'Theater not found')
+
+    if (data.list_start && !data.list_start.length) throw new ApiError(StatusCodes.BAD_REQUEST, 'List start is required')
+    let listStart = data.list_start
+    delete data.list_start
+
+    if (typeof(listStart) == 'string')
+      listStart = listStart.split(',')
+
+    const newData = []
+    for (const start of listStart) {
+      const startHour = parseInt(start)
+      const endHour = startHour + Math.floor(movie.duration / 60) + (movie.duration % 60 > 0 ? 1 : 0)
+      newData.push({
+        ...data,
+        start: startHour,
+        end: endHour
+      })
     }
-    const result = ShowtimeModels.createShowtime(newData)
+    const result = ShowtimeModels.createManyShowtime(newData)
 
     // if success, reset showtimes
     if (result.acknowledged) {
@@ -42,27 +56,32 @@ const createShowtime = async (data) => {
 const updateShowtime = async (showtimeId, data) => {
   try {
     // remove invalid fields
-    const validatedData = { ...data }
+    const dataRemoved = { ...data }
     InvalidFields.forEach((field) => {
-      delete validatedData[field]
+      delete dataRemoved[field]
     })
 
-    // check if movie and cinema exist
+    // check if movie and theater exist
     let movie = null
-    if (validatedData.movieId) {
-      movie = await MovieModels.findOneById(validatedData.movieId)
+    if (dataRemoved.movieId) {
+      movie = await MovieModels.findOneById(dataRemoved.movieId)
       if (!movie) throw new ApiError(StatusCodes.NOT_FOUND, 'Movie not found')
     }
-    if (validatedData.cinemaId) {
-      const cinema = await CinemaModels.findOneById(validatedData.cinemaId)
-      if (!cinema) throw new ApiError(StatusCodes.NOT_FOUND, 'Cinema not found')
+    if (dataRemoved.theaterId) {
+      const theater = await TheaterModels.findOneById(dataRemoved.theaterId)
+      if (!theater) throw new ApiError(StatusCodes.NOT_FOUND, 'Theater not found')
     }
 
     // calculate end time and update showtime
-    if (validatedData.start && movie) {
-      validatedData.end = data.start + Math.floor(movie.duration / 60) + (movie.duration % 60 > 0 ? 1 : 0)
+    if (dataRemoved.start && movie) {
+      dataRemoved.end = data.start + Math.floor(movie.duration / 60) + (movie.duration % 60 > 0 ? 1 : 0)
     }
-    const showtime = await ShowtimeModels.updateShowtime(showtimeId, validatedData)
+
+    const newData = {
+      ...dataRemoved,
+      updatedAt: new Date()
+    }
+    const showtime = await ShowtimeModels.updateShowtime(showtimeId, newData)
     // if success, reset showtimes
     if (showtime) {
       showtimes.length = 0
@@ -136,7 +155,7 @@ const pushBookedChairs = async (showtimeId, chairs) => {
 }
 
 export const ShowtimeServices = {
-  createShowtime,
+  createManyShowtime,
   updateShowtime,
   deleteShowtime,
   fetchAll,

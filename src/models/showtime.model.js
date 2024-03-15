@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
-import moment from 'moment'
 import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
 import { fixObjectId } from 'utils/formatters'
 
@@ -9,7 +8,7 @@ const ShowtimeCollection = 'showtimes'
 
 const schemaCreateShowtime = Joi.object({
   movieId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
-  cinemaId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
+  theaterId: Joi.string().pattern(OBJECT_ID_REGEX).message(OBJECT_ID_MESSAGE).required(),
   day: Joi.date().required(),
   start: Joi.number().min(7).max(20).required(),
   end: Joi.number().min(10).max(23).required(),
@@ -32,6 +31,26 @@ const validateShowtime = async (data) => {
   }
 }
 
+
+// // Xác định hàm để xóa các bản ghi có thuộc tính 'day' trước thời điểm hiện tại
+// async function deletePastShowtimes(now) {
+//   try {
+//     // Xác định điều kiện để xóa các bản ghi
+//     const filter = {
+//       day: { $lt: now } // Lọc các bản ghi có thuộc tính 'day' nhỏ hơn thời điểm hiện tại
+//     }
+
+//     // Xóa các bản ghi
+//     const result = await getMongo().collection(ShowtimeCollection).deleteMany(filter)
+
+//     console.log(`${result.deletedCount} bản ghi đã được xóa.`)
+
+//   } catch (error) {
+//     console.error('Lỗi khi xóa các bản ghi:', error)
+//     // throw error
+//   }
+// }
+
 /**
  * function fetch all 30 ngày tới
  * @returns {Promise<array<Showtime>>}
@@ -44,6 +63,7 @@ const fetchAll = async () => {
     // const filter = {
     //   day: { $gte: now, $lte: end }
     // }
+    // deletePastShowtimes(now)
 
     return await getMongo().collection(ShowtimeCollection).find({ day: { $lte: end } }).toArray()
   } catch (error) {
@@ -66,16 +86,21 @@ const findOneById = async (showtimeId) => {
 
 /**
  * function tạo mới Showtime
- * @param {*} data
+ * @param {array} data
  * @returns {Promise<Showtime>}
  */
-const createShowtime = async (data) => {
+const createManyShowtime = async (data) => {
   try {
-    const validatedData = await validateShowtime(data)
-    validatedData.movieId = fixObjectId(validatedData.movieId)
-    validatedData.cinemaId = fixObjectId(validatedData.cinemaId)
+    const dataPromises = data.map((item) => validateShowtime(item))
 
-    return await getMongo().collection(ShowtimeCollection).insertOne(validatedData)
+    const validatedData = await Promise.all(dataPromises)
+
+    validatedData.forEach((item) => {
+      item.movieId = fixObjectId(item.movieId)
+      item.theaterId = fixObjectId(item.theaterId)
+    })
+
+    return await getMongo().collection(ShowtimeCollection).insertMany(validatedData)
   } catch (error) {
     throw error
   }
@@ -89,7 +114,7 @@ const createShowtime = async (data) => {
  */
 const updateShowtime = async (showtimeId, data) => {
   if (data.movieId) data.movieId = fixObjectId(data.movieId)
-  if (data.cinemaId) data.cinemaId = fixObjectId(data.cinemaId)
+  if (data.theaterId) data.theaterId = fixObjectId(data.theaterId)
   try {
     const update = {
       $set: {
@@ -133,43 +158,6 @@ const pushBookedChairs = async (showtimeId, chairs) => {
   }
 }
 
-
-// Xác định hàm để xóa các bản ghi có thuộc tính 'day' trước thời điểm hiện tại
-async function deletePastShowtimes() {
-  try {
-    const db = await getMongo()
-    const collection = db.collection(ShowtimeCollection)
-
-    // Lấy thời điểm hiện tại
-    const currentDate = moment().startOf('day')
-
-    // Xác định điều kiện để xóa các bản ghi
-    const filter = {
-      day: { $lt: currentDate.toDate() } // Lọc các bản ghi có thuộc tính 'day' nhỏ hơn thời điểm hiện tại
-    }
-
-    // Xóa các bản ghi
-    const result = await collection.deleteMany(filter)
-
-    console.log(`${result.deletedCount} bản ghi đã được xóa.`)
-
-  } catch (error) {
-    console.error('Lỗi khi xóa các bản ghi:', error)
-    // throw error
-  }
-}
-
-setInterval(deletePastShowtimes, 12*60*60*1000)
-
-
-const listShowtime = async () => {
-  try {
-    return await getMongo().collection(ShowtimeCollection).find().toArray()
-  } catch (error) {
-    throw error
-  }
-}
-
 const deleteShowtimeByMovieId = async (movieId) => {
   try {
     return await getMongo().collection(ShowtimeCollection).deleteMany({ movieId: fixObjectId(movieId) })
@@ -181,11 +169,10 @@ const deleteShowtimeByMovieId = async (movieId) => {
 export const ShowtimeModels = {
   fetchAll,
   findOneById,
-  createShowtime,
+  createManyShowtime,
   updateShowtime,
   deleteShowtime,
   pushBookedChairs,
-  listShowtime,
   deleteShowtimeByMovieId
 }
 

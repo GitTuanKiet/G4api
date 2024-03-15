@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/home.css">
  
 </head>
+
 <body >
 
 <%- include('layout/header.ejs') %>
@@ -19,27 +20,29 @@
 
         <label for="1">Chọn rạp</label>
         <br>
-        <select name="cinemaId" id="1">
+        <select id="1">
             <% cinemas.forEach(function(cinema) { %>
-                <option value="<%= cinema._id %>"><%= cinema.name %></option>
+                <option value="<%= cinema._id %>">
+                  <%= cinema.name %>
+                </option>
             <% }) %>
         </select>
         <br>
-        <label for="2">Tên phim</label>
+        <label for="2">Chọn phòng</label>
         <br>
-        <select name="movieId" id="2">
+        <select name="theaterId" id="2">
+                <option></option>
+        </select>
+        <br>
+        <label for="3">Tên phim</label>
+        <br>
+        <select name="movieId" id="3">
             <% movies.forEach(function(movie) { %>
                 
             <option value="<%= movie._id %>"><%= movie.title %></option>
             <% }); %>
         </select>
         <br>
-        <!-- <label for="3">Loại chiếu</label>
-        <br> -->
-        <!-- <select name="3D/2D" id="">
-            <option value="2D">2D</option>
-            <option value="3D">3D</option>
-        </select> -->
     <br>
         <label for="4">Suất chiếu</label>
         <br>
@@ -71,11 +74,36 @@
     </form>
 </div>
 
-
-
 <%- include('layout/footer.ejs') %>
 
 <%- include('layout/js-layout.ejs') %>
 
 </body>
+
+<script>
+
+  const cinemaSelect = document.getElementById('1');
+  const theaterSelect = document.getElementById('2');
+
+  const temp = '<%= JSON.stringify(theaters) %>';
+  const listTheater = JSON.parse(temp.replaceAll('&#34;', '"'))
+
+  const filterTheaters = (selectedCinemaId) => {
+    const filteredTheater = listTheater.filter(theater => theater.cinemaId === selectedCinemaId);
+
+    theaterSelect.innerHTML = '';
+
+    filteredTheater.forEach(theater => {
+      const option = document.createElement('option');
+      option.value = theater._id;
+      option.textContent = theater.name;
+      theaterSelect.appendChild(option);
+    });
+  };
+
+  cinemaSelect.addEventListener('change', (e) => {
+    filterTheaters(e.target.value);
+  });
+</script>
+
 </html>

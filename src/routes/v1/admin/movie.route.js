@@ -14,11 +14,11 @@ router.route('/:movieId')
 
 router.get('/manager-movies', MovieControllers.getManagerMovies)
 router.get('/create-movie', MovieControllers.addMovie)
-router.post('/storate-movie', MovieControllers.storageMovie)
+router.post('/storate-movie', MovieControllers.createMovieController)
 router.get('/show-movie/:id', MovieControllers.showMovie)
 router.get('/edit-movie/:id', MovieControllers.editMovie)
-router.post('/update-movie/:id', MovieControllers.updateMovie)
-router.post('/delete-movie/:id', MovieControllers.destroyMovie)
+router.post('/update-movie/:id', MovieControllers.updateMovieController)
+router.post('/delete-movie/:id', MovieControllers.deleteMovieController)
 
 module.exports = router
 

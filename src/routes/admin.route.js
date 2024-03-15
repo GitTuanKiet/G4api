@@ -11,19 +11,19 @@ import { MovieControllers } from 'controllers/movie.controller'
 
 router.get('/manager-movies', MovieControllers.getManagerMovies)
 router.get('/create-movie', MovieControllers.addMovie)
-router.post('/storate-movie', MovieControllers.storageMovie)
-router.get('/show-movie/:id', MovieControllers.showMovie)
-router.get('/edit-movie/:id', MovieControllers.editMovie)
-router.post('/update-movie/:id', MovieControllers.updateMovie)
-router.post('/delete-movie/:id', MovieControllers.destroyMovie)
+router.route('/storate-movie').post(MovieControllers.createMovieController)
+router.get('/show-movie/:movieId', MovieControllers.showMovie)
+router.get('/edit-movie/:movieId', MovieControllers.editMovie)
+router.post('/update-movie/:movieId', MovieControllers.updateMovieController)
+router.post('/delete-movie/:movieId', MovieControllers.deleteMovieController)
 
 import { ShowtimeControllers } from 'controllers/showtime.controller'
 
 router.get('/manager-showtime', ShowtimeControllers.getManagerShowtime)
 router.get('/create-showtime', ShowtimeControllers.addShowtime)
-router.post('/storate-showtime', ShowtimeControllers.storageShowtime)
-router.get('/edit-showtime/:id', ShowtimeControllers.editShowtime)
-router.post('/update-showtime/:id', ShowtimeControllers.updateShowtime)
-router.post('/delete-showtime/:id', ShowtimeControllers.destroyShowtime)
+router.post('/storate-showtime', ShowtimeControllers.createShowtimeController)
+router.get('/edit-showtime/:showtimeId', ShowtimeControllers.editShowtime)
+router.post('/update-showtime/:showtimeId', ShowtimeControllers.updateShowtimeController)
+router.post('/delete-showtime/:showtimeId', ShowtimeControllers.deleteShowtimeController)
 
 module.exports = router

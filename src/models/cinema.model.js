@@ -8,11 +8,6 @@ const CinemaCollection = 'cinemas'
 const schemaCreateCinema = Joi.object({
   name: Joi.string().required(),
   city: Joi.string().required(),
-  type: Joi.string().valid('2D', '3D', '4D').required(),
-  roomMap: Joi.array().items(Joi.object({
-    chair: Joi.string().required(),
-    type: Joi.string().valid('normal', 'vip', 'couple', 'disable').required()
-  })).required(),
   createdAt: Joi.date().default(new Date()),
   updatedAt: Joi.date().default(new Date())
 })
@@ -67,26 +62,10 @@ const createCinema = async (data) => {
 
 const updateCinema = async (cinemaId, data) => {
   try {
-    const update = {
-      $set: {
-        ...data,
-        updatedAt: new Date()
-      }
-    }
-
     return await getMongo().collection(CinemaCollection).updateOne(
-      { _id:  fixObjectId(cinemaId) },
-      update
+      { _id: fixObjectId(cinemaId) },
+      { set: data }
     )
-  } catch (error) {
-    throw error
-  }
-}
-
-
-const listCinemaNameId = async () => {
-  try {
-    return await getMongo().collection(CinemaCollection).find({}, { projection: { _id: 1, name: 1 } }).toArray()
   } catch (error) {
     throw error
   }
@@ -96,6 +75,5 @@ export const CinemaModels = {
   findOneById,
   fetchAll,
   createCinema,
-  updateCinema,
-  listCinemaNameId
+  updateCinema
 }

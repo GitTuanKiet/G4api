@@ -85,8 +85,7 @@ const createMovie = async (data) => {
  */
 const updateMovie = async (movieId, data) => {
   try {
-    const value = await validateMovie(data)
-    return await getMongo().collection(MovieCollection).findOneAndUpdate({ _id: fixObjectId(movieId) }, { $set: value }, { returnDocument: 'after' })
+    return await getMongo().collection(MovieCollection).findOneAndUpdate({ _id: fixObjectId(movieId) }, { $set: data }, { returnDocument: 'after' })
   } catch (error) {
     throw error
   }
@@ -105,16 +104,6 @@ const deleteMovie = async (movieId) => {
   }
 }
 
-const list = async () => {
-
-  return await getMongo().collection(MovieCollection).find().toArray()
-}
-
-const listMovieNameId = async () => {
-
-  return await getMongo().collection(MovieCollection).find({}, { projection: { _id: 1, title: 1 } }).toArray()
-}
-
 // export các hàm để sử dụng
 export const MovieModels = {
   validateMovie,
@@ -122,8 +111,6 @@ export const MovieModels = {
   fetchAll,
   createMovie,
   updateMovie,
-  deleteMovie,
-  list,
-  listMovieNameId
+  deleteMovie
 }
 

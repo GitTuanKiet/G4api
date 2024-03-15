@@ -14,10 +14,10 @@ router.route('/:showtimeId')
 
 router.get('/manager-showtime', ShowtimeControllers.getManagerShowtime)
 router.get('/create-showtime', ShowtimeControllers.addShowtime)
-router.post('/storate-showtime', ShowtimeControllers.storageShowtime)
-router.get('/edit-showtime/:id', ShowtimeControllers.editShowtime)
-router.post('/update-showtime/:id', ShowtimeControllers.updateShowtime)
-router.post('/delete-showtime/:id', ShowtimeControllers.destroyShowtime)
+router.post('/storate-showtime', ShowtimeControllers.createShowtimeController)
+router.get('/edit-showtime/:showtimeId', ShowtimeControllers.editShowtime)
+router.post('/update-showtime/:showtimeId', ShowtimeControllers.updateShowtimeController)
+router.post('/delete-showtime/:showtimeId', ShowtimeControllers.deleteShowtimeController)
 
 module.exports = router
 

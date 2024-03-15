@@ -21,6 +21,12 @@ export const fixObjectId = (id) => {
   return new ObjectId(id)
 }
 
+export const fixString = (value) => {
+  if (typeof value === 'string')
+    return value.trim()
+  return value.toString().trim()
+}
+
 export const VNDtoUSD = (vnd) => {
   return (vnd).toLocaleString('en', { style: 'currency', currency: 'USD' })
 }
