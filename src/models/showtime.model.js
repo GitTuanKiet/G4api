@@ -93,6 +93,7 @@ const updateShowtime = async (ShowtimeId, data) => {
     const update = {
       $set: {
         ...data,
+        day: new Date(data.day),
         updatedAt: new Date()
       }
     }
@@ -152,7 +153,7 @@ async function deletePastShowtimes() {
 
   } catch (error) {
     console.error('Lỗi khi xóa các bản ghi:', error)
-    throw error
+    // throw error
   }
 }
 
