@@ -98,6 +98,7 @@ const fetchAll = async () => {
     // thêm dateId cho từng showtime dựa theo day
     // nếu day là ngày hiện tại thì dateId = 0
     // những ngày sau thì dateId = 1, 2, 3, ...
+    // những ngày trước thì dateId = -1, -2, -3, ...
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     fetch.forEach((showtime) => {

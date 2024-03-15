@@ -41,10 +41,11 @@ const fetchAll = async () => {
     const now = new Date()
     const end = new Date(now)
     end.setDate(now.getDate() + 30)
+    // const filter = {
+    //   day: { $gte: now, $lte: end }
+    // }
 
-    return await getMongo().collection(ShowtimeCollection).find({
-      day: { $gte: now, $lte: end }
-    }).toArray()
+    return await getMongo().collection(ShowtimeCollection).find({ day: { $lte: end } }).toArray()
   } catch (error) {
     throw error
   }
@@ -52,12 +53,12 @@ const fetchAll = async () => {
 
 /**
  * function find Showtime by id
- * @param {*} ShowtimeId
+ * @param {*} showtimeId
  * @returns {Promise<Showtime>}
  */
-const findOneById = async (ShowtimeId) => {
+const findOneById = async (showtimeId) => {
   try {
-    return await getMongo().collection(ShowtimeCollection).findOne({ _id: fixObjectId(ShowtimeId) })
+    return await getMongo().collection(ShowtimeCollection).findOne({ _id: fixObjectId(showtimeId) })
   } catch (error) {
     throw error
   }
@@ -82,22 +83,24 @@ const createShowtime = async (data) => {
 
 /**
  * function update Showtime by id
- * @param {*} ShowtimeId
+ * @param {*} showtimeId
  * @param {*} data
  * @returns {Promise<Showtime>}
  */
-const updateShowtime = async (ShowtimeId, data) => {
+const updateShowtime = async (showtimeId, data) => {
   if (data.movieId) data.movieId = fixObjectId(data.movieId)
   if (data.cinemaId) data.cinemaId = fixObjectId(data.cinemaId)
   try {
     const update = {
       $set: {
         ...data,
+        day: new Date(data.day),
+        price: Number(data.price),
         updatedAt: new Date()
       }
     }
 
-    return await getMongo().collection(ShowtimeCollection).findOneAndUpdate({ _id: fixObjectId(ShowtimeId) }, update, { returnDocument: 'after' })
+    return await getMongo().collection(ShowtimeCollection).findOneAndUpdate({ _id: fixObjectId(showtimeId) }, update, { returnDocument: 'after' })
   } catch (error) {
     throw error
   }
@@ -122,9 +125,9 @@ const deleteShowtime = async (ShowtimeId) => {
  * @param {array} chairs
  * @returns {Promise<Showtime>}
  */
-const pushBookedChairs = async (ShowtimeId, chairs) => {
+const pushBookedChairs = async (showtimeId, chairs) => {
   try {
-    return await getMongo().collection(ShowtimeCollection).updateOne({ _id: fixObjectId(ShowtimeId) }, { $push: { bookedChairs: { $each: chairs } } })
+    return await getMongo().collection(ShowtimeCollection).updateOne({ _id: fixObjectId(showtimeId) }, { $push: { bookedChairs: { $each: chairs } } })
   } catch (error) {
     throw error
   }
@@ -152,7 +155,7 @@ async function deletePastShowtimes() {
 
   } catch (error) {
     console.error('Lỗi khi xóa các bản ghi:', error)
-    throw error
+    // throw error
   }
 }
 

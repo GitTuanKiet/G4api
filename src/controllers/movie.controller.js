@@ -50,7 +50,6 @@ const deleteMovieController = async (req, res, next) => {
 
 const getManagerMovies = async (req, res, next) => {
   const movies = await MovieModels.list()
-  // console.log(movies)
   res.render('manager-movies.ejs', { movies } )
 }
 
@@ -89,15 +88,12 @@ const editMovie = async (req, res, next) =>
 {
   const movieId =req.params.id
   const movie = await MovieModels.findOneById(movieId)
-  // console.log(movie);
+
   return res.render('edit-movie.ejs', { movie })
 }
 
 const updateMovie = async(req, res, next) =>
 {
-// xử lý update
-  // console.log(req.body);
-  // console.log(req.params.id)
   try {
     const movieID = req.params.id
     const formData = req.body

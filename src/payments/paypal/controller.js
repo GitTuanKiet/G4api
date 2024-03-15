@@ -27,6 +27,7 @@ const createOrderController = async (req, res, next) => {
     // Tạo đơn hàng
     const orderData = model.paypalOrderData(validated)
     const data = await model.createOrder(orderData, accessTokenPaypal)
+    console.log('🚀 ~ createOrderController ~ data:', data)
     if (data.error) {
       return res.status(StatusCodes.BAD_REQUEST).json(data.error)
     }
@@ -34,7 +35,9 @@ const createOrderController = async (req, res, next) => {
     const { id, status, links } = data
 
     if (status !== 'CREATED') {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Order not created' })
+      let message = 'Order not created'
+      if (data.details) message = data.details[0].description
+      return res.status(StatusCodes.BAD_REQUEST).json({ message })
     }
 
     if (!links) {
