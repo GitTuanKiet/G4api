@@ -14,7 +14,7 @@ router.route('/:showtimeId')
 
 router.get('/manager-showtime', ShowtimeControllers.getManagerShowtime)
 router.get('/create-showtime', ShowtimeControllers.addShowtime)
-router.post('/storate-showtime', ShowtimeControllers.createShowtimeController)
+router.post('/storage-showtime', ShowtimeControllers.createShowtimeController)
 router.get('/edit-showtime/:showtimeId', ShowtimeControllers.editShowtime)
 router.post('/update-showtime/:showtimeId', ShowtimeControllers.updateShowtimeController)
 router.post('/delete-showtime/:showtimeId', ShowtimeControllers.deleteShowtimeController)

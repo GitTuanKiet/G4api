@@ -14,13 +14,14 @@
 <body >
 
 <%- include('layout/header.ejs') %>
+
 <div class="container">
     <h2>Thêm suất chiếu</h2>
-    <form action="/storate-showtime" method="post">
+    <form action="/storage-showtime" method="post">
 
         <label for="1">Chọn rạp</label>
         <br>
-        <select id="1">
+        <select id="1" >
             <% cinemas.forEach(function(cinema) { %>
                 <option value="<%= cinema._id %>">
                   <%= cinema.name %>
@@ -101,9 +102,14 @@
     });
   };
 
-  cinemaSelect.addEventListener('change', (e) => {
-    filterTheaters(e.target.value);
-  });
+  function updateTheatersOnPageLoad() {
+    const selectedCinemaId = cinemaSelect.value;
+    filterTheaters(selectedCinemaId);
+}
+updateTheatersOnPageLoad();
+  cinemaSelect.addEventListener('change', () => {
+    filterTheaters(cinemaSelect.value); // Sử dụng giá trị của thẻ <select> rạp chiếu phim
+});
 </script>
 
 </html>
