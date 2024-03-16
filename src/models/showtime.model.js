@@ -133,12 +133,12 @@ const updateShowtime = async (showtimeId, data) => {
 
 /**
  * function delete Showtime by id
- * @param {*} ShowtimeId
+ * @param {*} showtimeId
  * @returns {Promise<Showtime>}
  */
-const deleteShowtime = async (ShowtimeId) => {
+const deleteShowtime = async (showtimeId) => {
   try {
-    return await getMongo().collection(ShowtimeCollection).deleteOne({ _id: fixObjectId(ShowtimeId) })
+    return await getMongo().collection(ShowtimeCollection).deleteOne({ _id: fixObjectId(showtimeId) })
   } catch (error) {
     throw error
   }
@@ -146,7 +146,7 @@ const deleteShowtime = async (ShowtimeId) => {
 
 /**
  * function push booked seat
- * @param {*} ShowtimeId
+ * @param {*} showtimeId
  * @param {array} chairs
  * @returns {Promise<Showtime>}
  */

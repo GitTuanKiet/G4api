@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { MovieModels } from 'models/movie.model'
-import { ShowtimeModels } from 'models/showtime.model'
+import { ShowtimeServices } from './showtime.service'
 import { slugify } from 'utils/formatters'
 import fs from 'fs'
 import path from 'path'
@@ -48,10 +48,6 @@ const fetchAll = async () => {
 const createMovie = async (data) => {
   try {
     data.slug = slugify(data.title)
-    data.actor = data.actor.replace(/^,|,$/g, '');
-    data.director = data.director.replace(/^,|,$/g, '');
-    data.actor = data.actors.split(',').map(actor => actor.trim())
-    data.director = data.directors.split(',').map(director => director.trim())
     data.trailer = data.trailer.replace('youtu.be', 'www.youtube.com/embed')
     const result = await MovieModels.createMovie(data)
 
@@ -72,23 +68,17 @@ const updateMovie = async (movieId, data) => {
     if (!check) throw new ApiError(StatusCodes.NOT_FOUND, 'Movie not found')
 
     if (data.title) data.slug = slugify(data.title)
-    data.actor = data.actor.replace(/^,|,$/g, '');
-    data.director = data.director.replace(/^,|,$/g, '');
-    data.actor = data.actors.split(',').map(actor => actor.trim())
-    data.director = data.directors.split(',').map(director => director.trim())
     data.trailer = data.trailer.replace('youtu.be', 'www.youtube.com/embed')
-    data.releaseDate = new Date(data.releaseDate)
-    data.endDate = new Date(data.endDate)
 
-    if (data.poster) {
-      const oldPoster = check.poster
-      if (oldPoster && oldPoster !== data.poster) {
-        const filePath = path.join('./', oldPoster)
-        if (fs.existsSync(filePath)) {
-          await fs.promises.unlink(filePath)
-        }
-      }
-    }
+    // if (data.poster) {
+    //   const oldPoster = check.poster
+    //   if (oldPoster && oldPoster !== data.poster) {
+    //     const filePath = path.join('./', oldPoster)
+    //     if (fs.existsSync(filePath)) {
+    //       await fs.promises.unlink(filePath)
+    //     }
+    //   }
+    // }
 
     const movie = await MovieModels.updateMovie(movieId, data)
 
@@ -107,16 +97,16 @@ const deleteMovie = async (movieId) => {
     const check = await MovieModels.findOneById(movieId)
     if (!check) throw new ApiError(StatusCodes.NOT_FOUND, 'Movie not found')
 
-    if (check.poster) {
-      const filePath = path.join('./', check.poster)
-      if (fs.existsSync(filePath)) {
-        await fs.promises.unlink(filePath)
-      }
-    }
+    // if (check.poster) {
+    //   const filePath = path.join('./', check.poster)
+    //   if (fs.existsSync(filePath)) {
+    //     await fs.promises.unlink(filePath)
+    //   }
+    // }
 
-    const [result] = await Promise.all([MovieModels.deleteMovie(movieId), ShowtimeModels.deleteShowtimeByMovieId(movieId)])
-    console.log('🚀 ~ deleteMovie ~ result:', result)
-    if (result.acknowledged) {
+    const [resultMovie, resultShowtime] = await Promise.all([MovieModels.deleteMovie(movieId), ShowtimeServices.deleteManyByMovieId(movieId)])
+
+    if (resultMovie.acknowledged && resultShowtime.acknowledged) {
       movies.length = 0
     }
 
