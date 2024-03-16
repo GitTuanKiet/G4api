@@ -48,10 +48,6 @@ const fetchAll = async () => {
 const createMovie = async (data) => {
   try {
     data.slug = slugify(data.title)
-    data.actor = data.actor.replace(/^,|,$/g, '');
-    data.director = data.director.replace(/^,|,$/g, '');
-    data.actor = data.actors.split(',').map(actor => actor.trim())
-    data.director = data.directors.split(',').map(director => director.trim())
     data.trailer = data.trailer.replace('youtu.be', 'www.youtube.com/embed')
     const result = await MovieModels.createMovie(data)
 
@@ -72,10 +68,6 @@ const updateMovie = async (movieId, data) => {
     if (!check) throw new ApiError(StatusCodes.NOT_FOUND, 'Movie not found')
 
     if (data.title) data.slug = slugify(data.title)
-    data.actor = data.actor.replace(/^,|,$/g, '');
-    data.director = data.director.replace(/^,|,$/g, '');
-    data.actor = data.actors.split(',').map(actor => actor.trim())
-    data.director = data.directors.split(',').map(director => director.trim())
     data.trailer = data.trailer.replace('youtu.be', 'www.youtube.com/embed')
     data.releaseDate = new Date(data.releaseDate)
     data.endDate = new Date(data.endDate)
@@ -114,9 +106,8 @@ const deleteMovie = async (movieId) => {
       }
     }
 
-    const [result] = await Promise.all([MovieModels.deleteMovie(movieId), ShowtimeModels.deleteShowtimeByMovieId(movieId)])
-    console.log('🚀 ~ deleteMovie ~ result:', result)
-    if (result.acknowledged) {
+    const [resultMovie, resultShowtime] = await Promise.all([MovieModels.deleteMovie(movieId), ShowtimeModels.deleteShowtimeByMovieId(movieId)])
+    if (resultMovie.acknowledged) {
       movies.length = 0
     }
 
