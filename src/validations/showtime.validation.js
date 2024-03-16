@@ -5,12 +5,12 @@ import ApiError from 'utils/ApiError'
 
 const createShowtimeValidation = async (req, res, next) => {
   try {
-    let {list_start,price} = req.body;
-    req.body.price = parseInt(price);
+    let { list_start, price } = req.body
+    req.body.price = parseInt(price)
     if (typeof(list_start) == 'string')
-    list_start = list_start.split(',')
-    req.body.list_start = list_start;
-    req.body.day = new Date(req.body.day);
+      list_start = list_start.split(',')
+    req.body.list_start = list_start
+    req.body.day = new Date(req.body.day)
 
     const schemaCreateShowtime = Joi.object({
       movieId: Joi.string()
@@ -29,45 +29,45 @@ const createShowtimeValidation = async (req, res, next) => {
           'any.required': 'Rạp chiếu không được để trống.',
           'string.pattern.base': 'Rạp chiếu không hợp lệ'
         }),
-        day: Joi.date()
+      day: Joi.date()
         .required()
         .messages({
           'any.required': 'Ngày chiếu không được để trống.'
         }),
       list_start: Joi.array().items().required().messages(
-        {'array.base': 'Giờ bắt đầu không được để trống.'}
+        { 'array.base': 'Giờ bắt đầu không được để trống.' }
       ),
       price: Joi.number()
-      .required()
-      .messages({
-        'any.required': 'Giá suất chiếu không được để trống.',
-        'number.base': 'Giá suất chiếu phải là một số.'
-      }),
-    });
-    
-    await schemaCreateShowtime.validateAsync(req.body, { abortEarly: false, allowUnknown: true });
-    next();
+        .required()
+        .messages({
+          'any.required': 'Giá suất chiếu không được để trống.',
+          'number.base': 'Giá suất chiếu phải là một số.'
+        })
+    })
+
+    await schemaCreateShowtime.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
   } catch (error) {
-    const errorMessages = error.details.map(err => err.message);
-    const alertMessage = errorMessages.join('\n');
-    const redirectUrl = req.headers.referer || '/';
+    const errorMessages = error.details.map(err => err.message)
+    const alertMessage = errorMessages.join('\n')
+    const redirectUrl = req.headers.referer || '/'
 
     const script = `
       <script>
         alert(${JSON.stringify(alertMessage)});
         window.location.href = ${JSON.stringify(redirectUrl)};
       </script>
-    `;
-    res.send(script);
+    `
+    res.send(script)
   }
-};
+}
 
 const updateShowtimeValidation = async (req, res, next) => {
   try {
-    let { start, price } = req.body;
-    req.body.start = parseInt(start);
-    req.body.price = parseInt(price);
-    req.body.day = new Date(req.body.day);
+    let { start, price } = req.body
+    req.body.start = parseInt(start)
+    req.body.price = parseInt(price)
+    req.body.day = new Date(req.body.day)
 
     const schemaCreateShowtime = Joi.object({
       movieId: Joi.string()
@@ -86,7 +86,7 @@ const updateShowtimeValidation = async (req, res, next) => {
           'any.required': 'Rạp chiếu không được để trống.',
           'string.pattern.base': 'Rạp chiếu không hợp lệ'
         }),
-        day: Joi.date()
+      day: Joi.date()
         .required()
         .messages({
           'any.required': 'Ngày chiếu không được để trống.',
@@ -109,26 +109,23 @@ const updateShowtimeValidation = async (req, res, next) => {
         .messages({
           'any.required': 'Giá suất chiếu không được để trống.',
           'number.base': 'Giá suất chiếu phải là một số.'
-        }),
-    });
+        })
+    })
 
-    await schemaCreateShowtime.validateAsync(req.body, { abortEarly: false, allowUnknown: true });
-    next();
-    // console.log(req.body)
+    await schemaCreateShowtime.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
   } catch (error) {
-    const errorMessages = error.details.map(err => err.message);
-    const alertMessage = errorMessages.join('\n');
-    const redirectUrl = req.headers.referer || '/';
+    const errorMessages = error.details.map(err => err.message)
+    const alertMessage = errorMessages.join('\n')
+    const redirectUrl = req.headers.referer || '/'
 
     const script = `
       <script>
         alert(${JSON.stringify(alertMessage)});
         window.location.href = ${JSON.stringify(redirectUrl)};
       </script>
-    `;
-    res.send(script);
-
-  //  console.log(req.body)
+    `
+    res.send(script)
   }
 }
 

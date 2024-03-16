@@ -25,8 +25,6 @@ const createManyShowtime = async (data) => {
     let listStart = data.list_start
     delete data.list_start
 
-  
-
     const newData = []
     for (const start of listStart) {
       const startHour = parseInt(start)
@@ -37,7 +35,7 @@ const createManyShowtime = async (data) => {
         end: endHour
       })
     }
-    const result = ShowtimeModels.createManyShowtime(newData)
+    const result = await ShowtimeModels.createManyShowtime(newData)
 
     // if success, reset showtimes
     if (result.acknowledged) {
@@ -153,10 +151,24 @@ const pushBookedChairs = async (showtimeId, chairs) => {
   }
 }
 
+const deleteManyByMovieId = async (movieId) => {
+  try {
+    const result = await ShowtimeModels.deleteShowtimeByMovieId(movieId)
+    if (result.acknowledged) {
+      showtimes.length = 0
+    }
+
+    return result
+  } catch (error) {
+    throw error
+  }
+}
+
 export const ShowtimeServices = {
   createManyShowtime,
   updateShowtime,
   deleteShowtime,
   fetchAll,
-  pushBookedChairs
+  pushBookedChairs,
+  deleteManyByMovieId
 }

@@ -17,7 +17,8 @@ const fetchAllController = async (req, res, next) => {
 const createMovieController = async (req, res, next) => {
   try {
     await MovieServices.createMovie(req.body)
-    res.redirect('/manager-movies');
+
+    return res.redirect('/manager-movies')
   } catch (error) {
     next(error)
   }
@@ -27,7 +28,8 @@ const updateMovieController = async (req, res, next) => {
   try {
     const { movieId } = req.params
     await MovieServices.updateMovie(movieId, req.body)
-    res.redirect('/manager-movies');
+
+    return res.redirect('/manager-movies')
   } catch (error) {
     next(error)
   }
@@ -38,7 +40,7 @@ const deleteMovieController = async (req, res, next) => {
     const { movieId } = req.params
     await MovieServices.deleteMovie(movieId)
 
-    return res.status(StatusCodes.NO_CONTENT).json({ message: 'Delete movie successfully' })
+    return res.redirect('/manager-movies')
   } catch (error) {
     next(error)
   }

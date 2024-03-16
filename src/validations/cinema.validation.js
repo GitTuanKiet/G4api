@@ -6,12 +6,7 @@ const createCinemaValidation = async (req, res, next) => {
   try {
     const schemaCreateCinema = Joi.object({
       name: Joi.string().required(),
-      city: Joi.string().required(),
-      type: Joi.string().valid('2D', '3D', '4D').required(),
-      roomMap: Joi.array().items(Joi.object({
-        chair: Joi.string().required(),
-        type: Joi.string().valid('normal', 'vip', 'couple', 'disable').required()
-      })).required()
+      city: Joi.string().required()
     })
     await schemaCreateCinema.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
     next()
@@ -24,12 +19,7 @@ const updateCinemaValidation = async (req, res, next) => {
   try {
     const schemaUpdateCinema = Joi.object({
       name: Joi.string(),
-      city: Joi.string(),
-      type: Joi.string().valid('2D', '3D', '4D'),
-      roomMap: Joi.array().items(Joi.object({
-        chair: Joi.string(),
-        type: Joi.string().valid('normal', 'vip', 'couple', 'disable')
-      }))
+      city: Joi.string()
     })
     await schemaUpdateCinema.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
     next()
