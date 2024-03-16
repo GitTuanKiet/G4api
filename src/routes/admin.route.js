@@ -25,6 +25,7 @@ router.get('/create-showtime', ShowtimeControllers.addShowtime)
 router.post('/storage-showtime',ShowtimeValidations.createShowtimeValidation, ShowtimeControllers.createShowtimeController)
 router.get('/edit-showtime/:showtimeId',ShowtimeControllers.editShowtime)
 router.post('/update-showtime/:showtimeId',ShowtimeValidations.updateShowtimeValidation, ShowtimeControllers.updateShowtimeController)
+
 router.post('/delete-showtime/:showtimeId', ShowtimeControllers.deleteShowtimeController)
 
 module.exports = router
