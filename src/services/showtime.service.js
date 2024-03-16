@@ -25,8 +25,7 @@ const createManyShowtime = async (data) => {
     let listStart = data.list_start
     delete data.list_start
 
-    if (typeof(listStart) == 'string')
-      listStart = listStart.split(',')
+  
 
     const newData = []
     for (const start of listStart) {

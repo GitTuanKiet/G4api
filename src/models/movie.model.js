@@ -11,7 +11,6 @@ const schemaCreateMovie = Joi.object({
   slug: Joi.string().required(),
   description: Joi.string().required(),
   ageRestriction: Joi.number().valid(0, 13, 16, 18).required(),
-  // poster: Joi.string().pattern(UPLOAD_REGEX).required(),
   poster: Joi.string().required(),
   trailer: Joi.string().required(),
   duration: Joi.number().required(),
