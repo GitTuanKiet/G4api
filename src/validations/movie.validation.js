@@ -59,7 +59,7 @@ const createMovieValidation = async (req, res, next) => {
     })
     await schemaCreateMovie.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
     next()
-  }catch (error) {
+  } catch (error) {
     const errorMessages = error.details.map(err => err.message);
     const alertMessage = errorMessages.join('\n');
     const redirectUrl = req.headers.referer || '/';
@@ -71,7 +71,6 @@ const createMovieValidation = async (req, res, next) => {
       </script>
     `;
     res.send(script);
-    
   }
 }
 
@@ -142,7 +141,6 @@ const updateMovieValidation = async (req, res, next) => {
       </script>
     `;
     res.send(script);
-    
   }
 }
 

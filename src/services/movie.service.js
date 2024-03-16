@@ -106,9 +106,8 @@ const deleteMovie = async (movieId) => {
       }
     }
 
-    const [result] = await Promise.all([MovieModels.deleteMovie(movieId), ShowtimeModels.deleteShowtimeByMovieId(movieId)])
-    console.log('🚀 ~ deleteMovie ~ result:', result)
-    if (result.acknowledged) {
+    const [resultMovie, resultShowtime] = await Promise.all([MovieModels.deleteMovie(movieId), ShowtimeModels.deleteShowtimeByMovieId(movieId)])
+    if (resultMovie.acknowledged) {
       movies.length = 0
     }
 
