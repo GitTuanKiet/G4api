@@ -17,7 +17,7 @@
 
 <div class="container">
     <h2 style="text-align: center;">Sửa phim</h2>
-    <form action="/update-movie/<%= movie._id %>" method="post">
+    <form action="<%= getActionAd(`movie/update-movie/${movie._id}`) %>" method="post">
 
         <label for="1">Tiêu đề</label>
         <br>

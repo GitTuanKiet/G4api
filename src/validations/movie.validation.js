@@ -27,8 +27,9 @@ const createMovieValidation = async (req, res, next) => {
       ageRestriction: Joi.number().valid(0, 13, 16, 18).required().messages({
         'any.only': 'Giới hạn tuổi phải là 0, 13, 16 hoặc 18.'
       }),
-      duration: Joi.number().required().messages({
-        'number.base': 'Thời lượng phải là số.'
+      duration: Joi.number().min(30).required().messages({
+        'number.base': 'Thời lượng phải là số.',
+        'number.min': 'Thời lượng phải là số lớn hơn 30'
       }),
       releaseDate: Joi.date().required().messages({
         'date.base': 'Ngày phát hành không được để trống'

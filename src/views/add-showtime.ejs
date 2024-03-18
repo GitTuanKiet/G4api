@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thêm suất chiếu</title>
   
-  <link rel="stylesheet" href="css/add-showtime.css">
+  <link rel="stylesheet" href="/css/add-showtime.css">
   <%- include('layout/css-layout.ejs') %>
-  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="/css/home.css">
  
 </head>
 
@@ -17,7 +17,7 @@
 
 <div class="container">
     <h2>Thêm suất chiếu</h2>
-    <form action="/storage-showtime" method="post">
+    <form action="<%= getActionAd("showtime/storage-showtime") %>" method="post">
 
         <label for="1">Chọn rạp</label>
         <br>

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thêm phim</title>
   
-  <link rel="stylesheet" href="css/add-film.css">
+  <link rel="stylesheet" href="/css/add-film.css">
   <%- include('layout/css-layout.ejs') %>
-  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="/css/home.css">
  
 </head>
 <body >
@@ -16,7 +16,7 @@
 <div class="container">
     <h2 style="text-align: center;">Thêm phim</h2>
    
-    <form action="/storage-movie" method="post">
+    <form action="<%= getActionAd("movie/storage-movie") %>" method="post">
 
         <label for="1">Tiêu đề</label>
         <br>

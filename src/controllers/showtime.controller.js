@@ -3,14 +3,14 @@ import { ShowtimeServices } from 'services/showtime.service'
 import { CinemaServices } from 'services/cinema.service'
 import { MovieServices } from 'services/movie.service'
 import { TheaterServices } from 'services/theater.service'
-
+import { getActionAd } from 'utils/constants'
 import { fixString } from 'utils/formatters'
 
 const createShowtimeController = async (req, res, next) => {
   try {
     await ShowtimeServices.createManyShowtime(req.body)
 
-    return res.redirect('/manager-showtime')
+    return res.redirect(getActionAd('showtime/manager-showtimes'));
   } catch (error) {
     next(error)
   }
@@ -21,7 +21,7 @@ const updateShowtimeController = async (req, res, next) => {
     const { showtimeId } = req.params
     await ShowtimeServices.updateShowtime(showtimeId, req.body)
 
-    return res.redirect('/manager-showtime')
+    return res.redirect(getActionAd('showtime/manager-showtimes'));
   } catch (error) {
     next(error)
   }
@@ -32,7 +32,7 @@ const deleteShowtimeController = async (req, res, next) => {
     const { showtimeId } = req.params
     await ShowtimeServices.deleteShowtime(showtimeId)
 
-    return res.redirect('/manager-showtime')
+    return res.redirect(getActionAd('showtime/manager-showtimes'));
   } catch (error) {
     next(error)
   }
@@ -54,7 +54,7 @@ const addShowtime = async(req, res) => {
   const cinemas = await CinemaServices.fetchAll()
   const theaters = await TheaterServices.fetchAll()
 
-  return res.render('add-showtime.ejs', { movies, cinemas, theaters })
+  return res.render('add-showtime.ejs', { movies, cinemas, theaters, getActionAd })
 }
 
 //edit
@@ -70,7 +70,7 @@ const editShowtime = async(req, res, next) =>
 
     const showtime = showtimes.find((showtime) => fixString(showtime._id) === showtimeId)
 
-    return res.render('edit-showtime.ejs', { movies, cinemas, showtime, theaters })
+    return res.render('edit-showtime.ejs', { movies, cinemas, showtime, theaters, getActionAd })
   } catch (error) {
     next(error)
   }
@@ -92,7 +92,7 @@ const getManagerShowtime = async (req, res, next) => {
       showtime.nameTheater = theater.name
     }
 
-    return res.render('manager-showtime.ejs', { showtimes } )
+    return res.render('manager-showtime.ejs', { showtimes, getActionAd } )
   } catch (error) {
     next(error)
   }

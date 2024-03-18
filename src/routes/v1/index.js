@@ -7,7 +7,7 @@ router.use('/fetch', require('./fetch.route'))
 router.use('/auth', require('./auth.route'))
 
 // verify token middleware
-router.use(require('middlewares/verifyJWT'))
+// router.use(require('middlewares/verifyJWT'))
 
 // client routes
 router.use('/user', require('./client/user.route'))

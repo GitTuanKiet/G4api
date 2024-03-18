@@ -15,10 +15,9 @@ const router = express.Router()
 router.get('/manager-movies', MovieControllers.getManagerMovies)
 router.get('/create-movie', MovieControllers.addMovie)
 router.post('/storage-movie',MovieValidations.createMovieValidation, MovieControllers.createMovieController)
-router.get('/show-movie/:id', MovieControllers.showMovie)
-router.get('/edit-movie/:id', MovieControllers.editMovie)
-router.post('/update-movie/:id',MovieValidations.updateMovieValidation, MovieControllers.updateMovieController)
-router.post('/delete-movie/:id', MovieControllers.deleteMovieController)
+router.get('/show-movie/:movieId', MovieControllers.showMovie)
+router.get('/edit-movie/:movieId', MovieControllers.editMovie)
+router.post('/update-movie/:movieId',MovieValidations.updateMovieValidation, MovieControllers.updateMovieController)
+router.post('/delete-movie/:movieId', MovieControllers.deleteMovieController)
 
 module.exports = router
-

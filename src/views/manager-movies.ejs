@@ -6,7 +6,6 @@
   <title>Quản lý Phim</title>
   <%- include('layout/css-layout.ejs') %>
   <link rel="stylesheet" href="/css/home.css">
-  <link rel="stylesheet" href="/css/manager-movie.css">
 </head>
 <body >
 
@@ -14,7 +13,7 @@
 
   <div class="card-header">
     <h3 class="card-title">Quản lý danh sách phim</h3>
-    <a href="/create-movie" type="button" class="btn btn-primary btn-create"><i class="fa-solid fa-circle-plus"></i> Thêm mới phim</a>
+    <a href="<%= getActionAd("movie/create-movie") %>" type="button" class="btn btn-primary btn-create"><i class="fa-solid fa-circle-plus"></i> Thêm mới phim</a>
   </div>
   <!-- /.card-header -->
   <div class="card-body">
@@ -51,7 +50,7 @@
            
             
             <td class="action" style="height: 100%;">
-              <form action="/edit-movie/<%= movie._id %>" method="get">
+              <form action="<%= getActionAd(`movie/edit-movie/${movie._id}`) %>" method="get">
                 <button type="submit" class="button-icon icon-update">
                   <i class="fas fa-pen-to-square"></i>
                 </button>
@@ -59,12 +58,12 @@
             
     
               
-                <form id="myForm" action="delete-movie/<%= movie._id %>" method="post">
+                <form id="myForm" action="<%= getActionAd(`movie/delete-movie/${movie._id}`) %>" method="post">
                   <button id="submitButton" type="submit" class="button-icon icon-delete" onclick="submitForm()">
                     <i class="fas fa-trash-can"></i>
                   </button>
                 </form>
-              <a href="/show-movie/<%= movie._id %>"><i class="fas fa-eye icon-show"></i></a>
+              <a href="<%= getActionAd(`movie/show-movie/${movie._id}`) %>"><i class="fas fa-eye icon-show"></i></a>
             </td>
           </tr>
       <% }); %>

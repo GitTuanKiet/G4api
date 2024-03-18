@@ -23,8 +23,6 @@ const START_SERVER = () => {
 
   configViewEngine(app)
 
-  app.use('/', require('routes/admin.route'))
-
   app.use(require('middlewares/cors'))
   app.use('/v1', require('routes/v1'))
 
