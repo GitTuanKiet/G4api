@@ -13,6 +13,10 @@ const mailer = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
   secure: false,
+  tls: {
+    rejectUnauthorized: false,
+    minVersion: 'TLSv1.2'
+  },
   auth: {
     user: MAIL_USER,
     pass: MAIL_PASS
@@ -20,14 +24,12 @@ const mailer = nodemailer.createTransport({
 })
 
 const sendMail = (mailOptions) => {
-  return new Promise((resolve, reject) => {
-    mailer.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(info)
-      }
-    })
+  return mailer.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error)
+    } else {
+      console.log('INFO: ' + info.response)
+    }
   })
 }
 
