@@ -2,6 +2,7 @@ import PAYMENT_CONFIG from 'config/payment.config'
 import APP_CONFIG from 'config/app.config'
 import path from 'path'
 
+
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = PAYMENT_CONFIG
 
 export const DOMAINS = [
@@ -30,5 +31,6 @@ const getApiUrl = (PATH) => path.join('https://api-m.sandbox.paypal.com', PATH)
 const getClientCredentials = () => {
   return Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64')
 }
+export const getActionAd= (PATH) => path.join('/v1/admin/', PATH)
 
 export { getDOMAIN, isProduction, getApiUrl, getClientCredentials }

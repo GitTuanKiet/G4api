@@ -64,7 +64,7 @@ const updateOrderByOrderId = async (orderId, data) => {
   }
 }
 
-const listOders = async () => {
+const listOrders = async () => {
   try {
     return await getMongo().collection(OrderCollection).find().toArray()
   } catch (error) {
@@ -125,7 +125,7 @@ export const OrderModels = {
   createOrder,
   updateOrderByOrderId,
   findManyByUserId,
-  listOders,
+  listOrders,
   calculateTotalPriceByMonth
 }
 

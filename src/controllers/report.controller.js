@@ -8,7 +8,7 @@ const financialReport = async(req, res) =>
 
 const ordersReport = async(req, res) =>
 {
-  const orders = await OrderModels.listOders()
+  const orders = await OrderModels.listOrders()
   const totalPriceByMonth = OrderModels.calculateTotalPriceByMonth(orders)
 
   res.render('orders-report.ejs', { totalPriceByMonth })

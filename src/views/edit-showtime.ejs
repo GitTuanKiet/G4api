@@ -15,7 +15,7 @@
 <%- include('layout/header.ejs') %>
 <div class="container">
     <h2>Sửa suất chiếu</h2>
-    <form action="/update-showtime/<%= showtime._id %>" method="post">
+    <form action="<%= getActionAd(`showtime/update-showtime/${showtime._id}`) %>" method="post">
 
         <label for="0">Chọn rạp</label>
         <br>
