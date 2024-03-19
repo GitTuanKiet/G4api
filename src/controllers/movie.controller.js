@@ -18,7 +18,7 @@ const createMovieController = async (req, res, next) => {
   try {
     await MovieServices.createMovie(req.body)
 
-    return res.redirect(getActionAd('movie/manager-movies'));
+    return res.redirect(getActionAd('movie/manager-movies'))
   } catch (error) {
     next(error)
   }
@@ -29,7 +29,7 @@ const updateMovieController = async (req, res, next) => {
     const { movieId } = req.params
     await MovieServices.updateMovie(movieId, req.body)
 
-    return res.redirect(getActionAd('movie/manager-movies'));
+    return res.redirect(getActionAd('movie/manager-movies'))
   } catch (error) {
     next(error)
   }
@@ -40,7 +40,7 @@ const deleteMovieController = async (req, res, next) => {
     const { movieId } = req.params
     await MovieServices.deleteMovie(movieId)
 
-    return res.redirect(getActionAd('movie/manager-movies'));
+    return res.redirect(getActionAd('movie/manager-movies'))
   } catch (error) {
     next(error)
   }
@@ -74,7 +74,7 @@ const showMovie = async (req, res, next) =>
 
 //create
 const addMovie = (req, res) => {
-  return res.render('add-movie.ejs',{getActionAd})
+  return res.render('add-movie.ejs', { getActionAd })
 }
 
 //edit

@@ -5,18 +5,14 @@ import { ShowtimeValidations } from 'validations/showtime.validation'
 
 const router = express.Router()
 
-router.route('/create')
-  .post(ShowtimeValidations.createShowtimeValidation, ShowtimeControllers.createShowtimeController)
-
-router.route('/:showtimeId')
-  .put(ShowtimeValidations.updateShowtimeValidation, ShowtimeControllers.updateShowtimeController)
-  .delete(ShowtimeControllers.deleteShowtimeController)
-
+// views
 router.get('/manager-showtimes', ShowtimeControllers.getManagerShowtime)
-router.get('/create-showtime',ShowtimeControllers.addShowtime)
-router.post('/storage-showtime', ShowtimeValidations.createShowtimeValidation,  ShowtimeControllers.createShowtimeController)
-router.get('/edit-showtime/:showtimeId',  ShowtimeControllers.editShowtime)
-router.post('/update-showtime/:showtimeId',ShowtimeValidations.updateShowtimeValidation, ShowtimeControllers.updateShowtimeController)
+router.get('/create-showtime', ShowtimeControllers.addShowtime)
+router.get('/edit-showtime/:showtimeId', ShowtimeControllers.editShowtime)
+
+// api
+router.post('/storage-showtime', ShowtimeValidations.createShowtimeValidation, ShowtimeControllers.createShowtimeController)
+router.post('/update-showtime/:showtimeId', ShowtimeValidations.updateShowtimeValidation, ShowtimeControllers.updateShowtimeController)
 router.post('/delete-showtime/:showtimeId', ShowtimeControllers.deleteShowtimeController)
 
 module.exports = router
