@@ -4,8 +4,10 @@ Api for G4 project - a clone of the cgv.vn website
 
 ## Installation
 
+```bash
 git clone https://github.com/K63PTDAPMgroup4/G4api.git
 cd G4api
+```
 
 ## Usage
 
