@@ -6,9 +6,6 @@ const router = express.Router()
 router.use('/fetch', require('./fetch.route'))
 router.use('/auth', require('./auth.route'))
 
-// admin routes
-router.use('/admin', require('./admin'))
-
 // verify token middleware
 router.use(require('middlewares/verifyJWT'))
 
