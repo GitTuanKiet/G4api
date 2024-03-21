@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
 import { OBJECT_ID_MESSAGE, OBJECT_ID_REGEX } from 'utils/constants'
@@ -18,64 +17,18 @@ const schemaCreateTheater = Joi.object({
   updatedAt: Joi.date().default(new Date())
 })
 
-/**
- * function validate data trước khi tạo mới
- * @param {*} data
- * @returns {Promise<cinema>}
- */
-const validateTheater = async (data) => {
-  try {
-    return await schemaCreateTheater.validateAsync(data, { abortEarly: false })
-  } catch (error) {
-    throw error
-  }
-}
-
-const findOneById = async (theaterId) => {
-  try {
-    return await getMongo().collection(TheaterCollection).findOne({ _id: fixObjectId(theaterId) })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function fetch all cinemas
- * @returns {Promise<array<cinema>>}
- */
-const fetchAll = async () => {
-  try {
-    return await getMongo().collection(TheaterCollection).find({}).toArray()
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function tạo mới theater
- * @param {*} data
- * @returns {Promise<theater>}
- */
+const validateTheater = async (data) => await schemaCreateTheater.validateAsync(data, { abortEarly: false })
+const findOneById = async (theaterId) => await getMongo().collection(TheaterCollection).findOne({ _id: fixObjectId(theaterId) })
+const fetchAll = async () => await getMongo().collection(TheaterCollection).find({}).toArray()
 const createTheater = async (data) => {
-  try {
-    const validatedData = await validateTheater(data)
+  const validatedData = await validateTheater(data)
 
-    return await getMongo().collection(TheaterCollection).insertOne(validatedData)
-  } catch (error) {
-    throw error
-  }
+  return await getMongo().collection(TheaterCollection).insertOne(validatedData)
 }
-
 const updateTheater = async (theaterId, data) => {
   if (data.cinemaId) data.cinemaId = fixObjectId(data.cinemaId)
-  try {
-    return await getMongo().collection(TheaterCollection).updateOne(
-      { _id:  fixObjectId(theaterId) },
-      { set: data }
-    )
-  } catch (error) {
-    throw error
-  }
+
+  return await getMongo().collection(TheaterCollection).updateOne({ _id:  fixObjectId(theaterId) }, { set: data })
 }
 
 export const TheaterModels = {

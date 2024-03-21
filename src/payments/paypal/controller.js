@@ -6,7 +6,6 @@ import { UserModels } from 'models/user.model'
 
 import { sendMailOptions } from 'utils/mailer'
 
-
 let accessTokenPaypal = ''
 
 const createOrderController = async (req, res, next) => {
@@ -73,6 +72,7 @@ const createOrderController = async (req, res, next) => {
       CardServices.createCard(_id, req.body.order, { orderId: data.id, ...req.body, price: fixedPrice })
     ])
 
+    // eslint-disable-next-line no-console
     console.log(`Payment: userId => ${_id}, ${order} => ${name}, price => ${fixedPrice} ${currency}`)
     // Trả về link thanh toán
     return res.status(StatusCodes.OK).json({ link: data.links[1].href })

@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
 import { OBJECT_ID_MESSAGE, OBJECT_ID_REGEX } from 'utils/constants'
@@ -19,105 +18,21 @@ const schemaCreateOrder = Joi.object({
   createdAt: Joi.date().default(new Date())
 })
 
-const validateOrder = async (data) => {
-  try {
-    return await schemaCreateOrder.validateAsync(data, { abortEarly: false })
-  } catch (error) {
-    throw error
-  }
-}
-
-const findOneByOrderId = async (orderId) => {
-  try {
-    return await getMongo().collection(OrderCollection).findOne({ orderId: orderId })
-  } catch (error) {
-    throw error
-  }
-}
-
-const findManyByUserId = async (userId) => {
-  try {
-    return await getMongo().collection(OrderCollection).find({ userId: fixObjectId(userId) }).toArray()
-  } catch (error) {
-    throw error
-  }
-}
-
+const validateOrder = async (data) => await schemaCreateOrder.validateAsync(data, { abortEarly: false })
+const findOneByOrderId = async (orderId) => await getMongo().collection(OrderCollection).findOne({ orderId: orderId })
+const findManyByUserId = async (userId) => await getMongo().collection(OrderCollection).find({ userId: fixObjectId(userId) }).toArray()
 const createOrder = async (data) => {
-  try {
-    const value = await validateOrder(data)
-    value.userId = fixObjectId(value.userId)
-    return await getMongo().collection(OrderCollection).insertOne(value)
-  } catch (error) {
-    throw error
-  }
-}
+  const value = await validateOrder(data)
+  value.userId = fixObjectId(value.userId)
 
+  return await getMongo().collection(OrderCollection).insertOne(value)
+}
 const updateOrderByOrderId = async (orderId, data) => {
-  if (data.userId) {
-    data.userId = fixObjectId(data.userId)
-  }
-  try {
-    return await getMongo().collection(OrderCollection).updateOne({ orderId }, { $set: data })
-  } catch (error) {
-    throw error
-  }
+  if (data.userId) data.userId = fixObjectId(data.userId)
+
+  return await getMongo().collection(OrderCollection).updateOne({ orderId }, { $set: data })
 }
-
-const listOrders = async () => {
-  try {
-    return await getMongo().collection(OrderCollection).find().toArray()
-  } catch (error) {
-    throw error
-  }
-}
-
-function calculateTotalPriceByMonth(orders) {
-  try {
-    const totalPriceByMonth = {}
-
-    // Loop through each order
-    orders.forEach(order => {
-    // Get the month and year of order's createdAt
-      const month = order.createdAt.getMonth()
-      const year = order.createdAt.getFullYear()
-
-      // Create a key using month and year
-      const key = `${year}-${month + 1}` // Adding 1 to month because getMonth() returns zero-based month
-
-      // If the key doesn't exist in totalPriceByMonth, initialize it
-      if (!totalPriceByMonth[key]) {
-        totalPriceByMonth[key] = {
-          month: month + 1,
-          year: year,
-          totalAmount: 0,
-          orderCount: 0
-        }
-      }
-
-      // Add order's price to the corresponding month
-      totalPriceByMonth[key].totalAmount += order.price
-      totalPriceByMonth[key].orderCount++
-    })
-
-    // Convert totalPriceByMonth object into an array of month objects
-    const result = Object.values(totalPriceByMonth)
-
-    // Sort the result array by month
-    result.sort((a, b) => {
-    // Compare years first
-      if (a.year !== b.year) {
-        return a.year - b.year
-      }
-      // If years are the same, compare months
-      return a.month - b.month
-    })
-
-    return result
-  } catch (error) {
-    throw error
-  }
-}
+const listOrders = async () => await getMongo().collection(OrderCollection).find().toArray()
 
 
 export const OrderModels = {
@@ -125,7 +40,6 @@ export const OrderModels = {
   createOrder,
   updateOrderByOrderId,
   findManyByUserId,
-  listOrders,
-  calculateTotalPriceByMonth
+  listOrders
 }
 

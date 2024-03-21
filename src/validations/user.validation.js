@@ -1,7 +1,6 @@
 import Joi from 'joi'
 import path from 'path'
-
-import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE, UPLOAD_REGEX } from 'utils/constants'
+import { UPLOAD_REGEX } from 'utils/constants'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'
 
@@ -16,7 +15,7 @@ const updateProfile = async (req, res, next) => {
       gender: Joi.string().valid('male', 'female', 'none'),
       PIN: Joi.number()
     })
-    await schemaUpdateProfile.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaUpdateProfile.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message))
@@ -32,7 +31,7 @@ const uploadAvatar = async (req, res, next) => {
     const schemaAvatar = Joi.object({
       avatar: Joi.string().pattern(UPLOAD_REGEX)
     })
-    await schemaAvatar.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaAvatar.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )
@@ -45,7 +44,7 @@ const changePassword = async (req, res, next) => {
       oldPassword: Joi.string().min(8).required(),
       newPassword: Joi.string().min(8).required()
     })
-    await schemaChangePassword.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaChangePassword.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message))
@@ -57,7 +56,7 @@ const SetupPIN = async (req, res, next) => {
     const schemaSetupPIN = Joi.object({
       newPIN: Joi.number().min(6).required()
     })
-    await schemaSetupPIN.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaSetupPIN.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message))
@@ -71,7 +70,7 @@ const registerMemberCard = async (req, res, next) => {
       pin: Joi.string().required(),
       registeredDate: Joi.string().isoDate().required()
     })
-    await schemaRegisterMemberCard.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaRegisterMemberCard.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message))

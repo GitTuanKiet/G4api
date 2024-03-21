@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
 import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
@@ -15,89 +14,17 @@ const schemaCreateMemberCard = Joi.object({
   updatedAt: Joi.date().default(new Date())
 })
 
-/**
- * function validate data trước khi tạo mới
- * @param {*} data
- * @returns {Promise<memberCard>}
- */
-const validateMemberCard = async (data) => {
-  try {
-    return await schemaCreateMemberCard.validateAsync(data, { abortEarly: false })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function tìm memberCard theo id
- * @param {*} memberCardId
- * @returns {Promise<memberCard>}
- */
-const findOneById = async (memberCardId) => {
-  try {
-    return await getMongo().collection(MemberCardCollection).findOne({ _id: fixObjectId(memberCardId) })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function tìm memberCard theo userId
- * @param {*} userId
- * @returns {Promise<memberCard>}
- */
-const findOneByUserId = async (userId) => {
-  try {
-    return await getMongo().collection(MemberCardCollection).findOne({ userId: fixObjectId(userId) })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function tạo mới memberCard
- * @param {*} data
- * @returns {Promise<memberCard>}
- */
+const validateMemberCard = async (data) => await schemaCreateMemberCard.validateAsync(data, { abortEarly: false })
+const findOneById = async (memberCardId) => await getMongo().collection(MemberCardCollection).findOne({ _id: fixObjectId(memberCardId) })
+const findOneByUserId = async (userId) => await getMongo().collection(MemberCardCollection).findOne({ userId: fixObjectId(userId) })
 const createMemberCard = async (data) => {
-  try {
-    const validatedData = await validateMemberCard(data)
-    // chuyển đổi userId từ string sang ObjectId
-    validatedData.userId = fixObjectId(validatedData.userId)
+  const validatedData = await validateMemberCard(data)
+  validatedData.userId = fixObjectId(validatedData.userId)
 
-    return await getMongo().collection(MemberCardCollection).insertOne(validatedData)
-  } catch (error) {
-    throw error
-  }
+  return await getMongo().collection(MemberCardCollection).insertOne(validatedData)
 }
-
-/**
- * function cập nhật memberCard theo id
- * @param {*} memberCardId
- * @param {*} data
- * @returns {Promise<memberCard>}
- */
-const updateMemberCard = async (memberCardId, data) => {
-  try {
-    return await getMongo().collection(MemberCardCollection).findOneAndUpdate(
-      { _id: fixObjectId(memberCardId) }, { $set: data }, { returnOriginal: false })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function xóa memberCard theo id
- * @param {*} memberCardId
- * @returns {Promise<memberCard>}
- */
-const deleteMemberCard = async (memberCardId) => {
-  try {
-    return await getMongo().collection(MemberCardCollection).deleteOne({ _id: fixObjectId(memberCardId) })
-  } catch (error) {
-    throw error
-  }
-}
+const updateMemberCard = async (memberCardId, data) => await getMongo().collection(MemberCardCollection).findOneAndUpdate({ _id: fixObjectId(memberCardId) }, { $set: data }, { returnOriginal: false })
+const deleteMemberCard = async (memberCardId) => await getMongo().collection(MemberCardCollection).deleteOne({ _id: fixObjectId(memberCardId) })
 
 export const MemberCardModels = {
   findOneById,

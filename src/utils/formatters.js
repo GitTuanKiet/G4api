@@ -26,7 +26,3 @@ export const fixString = (value) => {
     return value.trim()
   return value.toString().trim()
 }
-
-export const VNDtoUSD = (vnd) => {
-  return (vnd).toLocaleString('en', { style: 'currency', currency: 'USD' })
-}

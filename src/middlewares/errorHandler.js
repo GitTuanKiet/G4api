@@ -19,7 +19,7 @@ const errorHandler = (err, req, res, next) => {
 
   if (isProd) delete responseError.stack
 
-  res.status(err.statusCode).json(responseError)
+  return res.status(err.statusCode).json(responseError)
 }
 
 module.exports = errorHandler

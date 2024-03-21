@@ -11,7 +11,4 @@ router.get('/uploads/:file', (req, res) => {
   }
 })
 
-// admin routes
-router.use('/admin', require('./admin'))
-
 module.exports = router

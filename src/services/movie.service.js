@@ -2,8 +2,6 @@
 import { MovieModels } from 'models/movie.model'
 import { ShowtimeServices } from './showtime.service'
 import { slugify } from 'utils/formatters'
-import fs from 'fs'
-import path from 'path'
 import { cloneDeep } from 'lodash'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from 'utils/ApiError'

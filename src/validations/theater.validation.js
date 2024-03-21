@@ -14,7 +14,7 @@ const createTheaterValidation = async (req, res, next) => {
         type: Joi.string().valid('normal', 'vip', 'couple', 'disable').required()
       })).required()
     })
-    await schemaCreateTheater.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaCreateTheater.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )
@@ -32,7 +32,7 @@ const updateTheaterValidation = async (req, res, next) => {
         type: Joi.string().valid('normal', 'vip', 'couple', 'disable')
       }))
     })
-    await schemaUpdateTheater.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaUpdateTheater.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )
