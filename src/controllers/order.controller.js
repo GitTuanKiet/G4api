@@ -1,6 +1,8 @@
 import { OrderModels } from 'models/order.model'
+import { StatusCodes } from 'http-status-codes'
 
-function calculateTotalPriceByMonth(orders) {
+async function calculateTotalPriceByMonth() {
+  const orders = await OrderModels.listOrders()
   const totalPriceByMonth = {}
 
   // Loop through each order
@@ -43,18 +45,17 @@ function calculateTotalPriceByMonth(orders) {
   return result
 }
 
-const ordersReport = async(req, res, next) =>
+const ordersReport = async (req, res, next) =>
 {
   try {
-    const orders = await OrderModels.listOrders()
-    const totalPriceByMonth = calculateTotalPriceByMonth(orders)
+    const totalPriceByMonth = await calculateTotalPriceByMonth()
 
-    return res.render('orders-report.ejs', { totalPriceByMonth })
+    return res.status(StatusCodes.OK).json({ totalPriceByMonth })
   } catch (error) {
     next(error)
   }
 }
 
-export const ReportControllers = {
+export const OrderControllers = {
   ordersReport
 }

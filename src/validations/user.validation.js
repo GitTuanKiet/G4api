@@ -8,8 +8,8 @@ const updateProfile = async (req, res, next) => {
   try {
     const schemaUpdateProfile = Joi.object({
       name: Joi.string().min(3).max(33).trim().strict(),
-      email: Joi.string().email(),
       phone: Joi.string().regex(/^[0-9]{10}$/),
+      city: Joi.string(),
       address: Joi.string(),
       birthday: Joi.string().isoDate(),
       gender: Joi.string().valid('male', 'female', 'none'),
