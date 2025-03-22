@@ -42,9 +42,7 @@ const createManyShowtime = async (data) => {
       showtimes.length = 0
     }
 
-    // return showtime
-    const showtime = await ShowtimeModels.findOneById(result.insertedId)
-    return showtime
+    return
   } catch (error) {
     throw error
   }

@@ -13,4 +13,7 @@ router.use(require('middlewares/verifyJWT'))
 router.use('/user', require('./client/user.route'))
 router.use('/payment', require('./client/payment.route'))
 
+// admin routes
+router.use('/admin', require('./admin'))
+
 module.exports = router

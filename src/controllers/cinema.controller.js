@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import { StatusCodes } from 'http-status-codes'
 import { CinemaServices } from 'services/cinema.service'
 

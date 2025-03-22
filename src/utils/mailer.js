@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import nodemailer from 'nodemailer'
 import MAIL_CONFIG from 'config/mail.config'
 import { getDOMAIN } from './constants'

@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
 import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
@@ -16,55 +15,15 @@ const schemaCreateCoupon = Joi.object({
   expiredAt: Joi.date().default(new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000))
 })
 
-/**
- * function validate data trước khi tạo mới
- * @param {*} data
- * @returns {Promise<coupon>}
- */
-const validateCoupon = async (data) => {
-  try {
-    return await schemaCreateCoupon.validateAsync(data, { abortEarly: false })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function fetch coupon theo userId
- * @param {*} userId
- * @returns {Promise<array<coupon>>}
- */
-const fetchAllByUserId = async (userId) => {
-  try {
-    return await getMongo().collection(CouponCollection).find({ userId: fixObjectId(userId), status: 'active' }).toArray()
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function tạo mới coupon
- * @param {*} data
- * @returns {Promise<coupon>}
- */
+const validateCoupon = async (data) => await schemaCreateCoupon.validateAsync(data, { abortEarly: false })
+const fetchAllByUserId = async (userId) => await getMongo().collection(CouponCollection).find({ userId: fixObjectId(userId), status: 'active' }).toArray()
 const createCoupon = async (data) => {
-  try {
-    const validatedData = await validateCoupon(data)
-    validatedData.userId = fixObjectId(validatedData.userId)
-    return await getMongo().collection(CouponCollection).insertOne(validatedData)
-  } catch (error) {
-    throw error
-  }
-}
+  const validatedData = await validateCoupon(data)
+  validatedData.userId = fixObjectId(validatedData.userId)
 
-const updateStatusByOrderId = async (orderId, status) => {
-  if (!orderId) return
-  try {
-    return await getMongo().collection(CouponCollection).updateOne({ orderId }, { $set: status })
-  } catch (error) {
-    throw error
-  }
+  return await getMongo().collection(CouponCollection).insertOne(validatedData)
 }
+const updateStatusByOrderId = async (orderId, status) => await getMongo().collection(CouponCollection).updateOne({ orderId }, { $set: status })
 
 export const CouponModels = {
   fetchAllByUserId,

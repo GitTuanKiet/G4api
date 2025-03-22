@@ -5,7 +5,7 @@ import { fixObjectId } from 'utils/formatters'
 import ApiError from 'utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 
-const InvalidFields = ['_id', 'userId', 'createdAt', 'updatedAt']
+// const InvalidFields = ['_id', 'userId', 'createdAt', 'updatedAt']
 
 const calculateLevel = (points) => {
   let level = 'iron'

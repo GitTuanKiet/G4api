@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import Joi from 'joi'
 import { getMongo } from 'utils/database/mongodb'
 import { OBJECT_ID_REGEX, OBJECT_ID_MESSAGE } from 'utils/constants'
@@ -20,69 +19,20 @@ const schemaCreateTicket = Joi.object({
   createdAt: Joi.date().default(new Date())
 })
 
-/**
- * function validate data trước khi tạo mới
- * @param {*} data
- * @returns {Promise<ticket>}
- */
-const validateTicket = async (data) => {
-  try {
-    return await schemaCreateTicket.validateAsync(data, { abortEarly: false })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function find by orderId
- * @param {*} orderId
- * @returns {Promise<ticket>}
- */
-const findByOrderId = async (orderId) => {
-  try {
-    return await getMongo().collection(TicketCollection).findOne({ orderId })
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function fetch ticket theo userId
- * @param {*} userId
- * @returns {Promise<array<ticket>>}
- */
-const fetchAllByUserId = async (userId) => {
-  try {
-    return await getMongo().collection(TicketCollection).find({ userId: fixObjectId(userId), status: { $in: ['used', 'active'] } }).toArray()
-  } catch (error) {
-    throw error
-  }
-}
-
-/**
- * function tạo mới ticket
- * @param {*} data
- * @returns {Promise<ticket>}
- */
+const validateTicket = async (data) => await schemaCreateTicket.validateAsync(data, { abortEarly: false })
+const findByOrderId = async (orderId) => await getMongo().collection(TicketCollection).findOne({ orderId })
+const fetchAllByUserId = async (userId) => await getMongo().collection(TicketCollection).find({ userId: fixObjectId(userId), status: { $in: ['used', 'active'] } }).toArray()
 const createTicket = async (data) => {
-  try {
-    const ticket = await validateTicket(data)
-    ticket.userId = fixObjectId(ticket.userId)
-    ticket.showtimeId = fixObjectId(ticket.showtimeId)
-    return await getMongo().collection(TicketCollection).insertOne(ticket)
-  } catch (error) {
-    throw error
-  }
-}
+  const ticket = await validateTicket(data)
+  ticket.userId = fixObjectId(ticket.userId)
+  ticket.showtimeId = fixObjectId(ticket.showtimeId)
 
+  return await getMongo().collection(TicketCollection).insertOne(ticket)
+}
 const updateStatusByOrderId = async (orderId, status) => {
-  if (!orderId) return
   if (status.expiredAt) delete status.expiredAt
-  try {
-    return await getMongo().collection(TicketCollection).updateOne({ orderId }, { $set: status })
-  } catch (error) {
-    throw error
-  }
+
+  return await getMongo().collection(TicketCollection).updateOne({ orderId }, { $set: status })
 }
 
 export const TicketModels = {

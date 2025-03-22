@@ -8,7 +8,7 @@ const createCinemaValidation = async (req, res, next) => {
       name: Joi.string().required(),
       city: Joi.string().required()
     })
-    await schemaCreateCinema.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaCreateCinema.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )
@@ -21,7 +21,7 @@ const updateCinemaValidation = async (req, res, next) => {
       name: Joi.string(),
       city: Joi.string()
     })
-    await schemaUpdateCinema.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    await schemaUpdateCinema.validateAsync(req.body, { abortEarly: false })
     next()
   } catch (error) {
     next(new ApiError(StatusCodes.BAD_REQUEST, new Error(error).message) )

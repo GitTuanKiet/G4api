@@ -1,6 +1,5 @@
 import Joi from 'joi'
 import { getApiUrl, getClientCredentials } from 'utils/constants'
-import { VNDtoUSD } from 'utils/formatters'
 import ApiError from 'utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 
